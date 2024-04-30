@@ -47,7 +47,7 @@ export const Seat = React.forwardRef<HTMLDivElement, SeatProps>((props, ref) => 
 				     ref={ref}>
 					
 					{isInCart ? (
-						<span className="text-xl text-red-500 text-zinc-400 font-medium">[n]</span>
+						<span className="text-xl text-red-500 font-medium">[n]</span>
 					) : (
 						<span className="text-xs text-zinc-400 font-medium">[n]</span>
 					)}
@@ -56,7 +56,7 @@ export const Seat = React.forwardRef<HTMLDivElement, SeatProps>((props, ref) => 
 			<PopoverContent>
 				<pre>
 					{/* {JSON.stringify({ seatData: props.data, row: props.row, row: props.row }, null, 1)} */}
-					<p>Místo - {data?.place}</p>
+					<p>Místo - {data?.data?.place}</p>
 					<p>Řada - {data?.row}</p>
 					<p>Typ tiketu - {data?.ticketTypes[0].id === data?.data?.ticketTypeId ? 'Regular Ticket' : 'VIP ticket'}</p>
 					<p>Cena tiketu - {data?.ticketTypes[0].id === data?.data?.ticketTypeId ? '1000' : '2000'}</p>

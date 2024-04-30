@@ -1,3 +1,5 @@
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { Seat } from '@/components/Seat.tsx';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx';
 import { Button } from '@/components/ui/button.tsx';
@@ -15,6 +17,51 @@ import './App.css';
 function App() {
 	const isLoggedIn = false;
 	
+	const [eventData, setEventData] = useState<any>(null);
+	const [seatData, setSeatData] = useState<any>(null);
+	const [seatTicketPrice, setSeatTicketPrice] = useState<any>(null);
+
+	const [cartItems, setCartItems] = useState<any[]>([]);
+	const [totalPrice, setTotalPrice] = useState<any[]>(0);
+
+	useEffect(() => {
+		const fetchData = async () => {
+		  try {
+			const responseEventData = await axios.get('https://nfctron-frontend-seating-case-study-2024.vercel.app/event');
+			setEventData(responseEventData.data);
+
+			if (responseEventData) {
+				const responseSeatData = await axios.get('https://nfctron-frontend-seating-case-study-2024.vercel.app/event-tickets?eventId=' + responseEventData.data?.eventId);
+				setSeatData(responseSeatData.data);
+				setSeatTicketPrice(responseSeatData.data.ticketTypes);
+			}
+
+		  } catch (error) {
+			console.error('Error fetching eventData:', error);
+		  }
+		};
+	
+		fetchData();
+	  }, []);
+
+
+	useEffect(() => {
+		const newTotalPrice = cartItems.reduce((total, currentItem) => {
+			return total + currentItem.price;
+		  }, 0);
+		
+		setTotalPrice(newTotalPrice);
+	}, [cartItems, seatTicketPrice]);
+	  
+
+	const addToCart = (item: any, price: number) => {
+		setCartItems(prevItems => [...prevItems, {...item, price}]);
+	};
+
+	const removeFromCart = (item: any) => {
+		setCartItems(prevItems => prevItems.filter(cartItem => cartItem.seatId !== item.data.seatId));
+	};
+
 	return (
 		<div className="flex flex-col grow">
 			{/* header (wrapper) */}
@@ -58,7 +105,7 @@ function App() {
 									</DropdownMenuContent>
 								</DropdownMenu>
 							) : (
-								<Button disabled variant="secondary">
+								<Button variant="secondary">
 									Login or register
 								</Button>
 							)
@@ -78,21 +125,28 @@ function App() {
 					}}>
 						{/*	seating map */}
 						{
-							Array.from({ length: 100 }, (_, i) => (
-								<Seat key={i} />
-							))
+							seatData?.seatRows.map((row) => (
+								row.seats.map((seat) => (
+									<Seat key={seat.seatId} data={seat} row={row.seatRow} ticketTypes={seatData.ticketTypes} addToCart={addToCart} removeFromCart={removeFromCart} />
+								))
+								))
 						}
 					</div>
 					
 					{/* event info */}
 					<aside className="w-full max-w-sm bg-white rounded-md shadow-sm p-3 flex flex-col gap-2">
 						{/* event header image placeholder */}
-						<div className="bg-zinc-100 rounded-md h-32" />
+						<div>
+							<img src={eventData?.headerImageUrl} />
+						</div>
 						{/* event name */}
-						<h1 className="text-xl text-zinc-900 font-semibold">[event-name]</h1>
+						<h1 className="text-xl text-zinc-900 font-semibold">{eventData?.namePub}</h1>
 						{/* event description */}
-						<p className="text-sm text-zinc-500">[event-description]: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam aliquid asperiores beatae deserunt dicta dolorem eius eos fuga laborum nisi officia pariatur quidem repellendus, reprehenderit sapiente, sed tenetur vel voluptatibus?</p>
+						<p className="text-sm text-zinc-500">{eventData?.description}</p>
 						{/* add to calendar button */}
+						<Button variant="default">
+							Detail
+						</Button>
 						<Button variant="secondary" disabled>
 							Add to calendar
 						</Button>
@@ -106,8 +160,8 @@ function App() {
 				<div className="max-w-screen-lg p-6 flex justify-between items-center gap-4 grow">
 					{/* total in cart state */}
 					<div className="flex flex-col">
-						<span>Total for [?] tickets</span>
-						<span className="text-2xl font-semibold">[?] CZK</span>
+						<span className='text-black'>Total for {cartItems.length} tickets</span>
+						<span className="text-2xl text-black font-semibold"> {totalPrice} CZK</span>
 					</div>
 					
 					{/* checkout button */}

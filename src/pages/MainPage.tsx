@@ -49,7 +49,6 @@ function MainPage() {
 				setSeatData(responseSeatData.data);
 				setSeatTicketPrice(responseSeatData.data.ticketTypes);
 			}
-
 		  } catch (error) {
 			console.error('Error fetching eventData:', error);
 		  }
@@ -118,7 +117,7 @@ function MainPage() {
 	};
 
 	return (
-		<div className="flex flex-col grow">
+		<div className="flex flex-col grow ">
 			{/* header (wrapper) */}
 			<nav className="sticky top-0 left-0 right-0 bg-white border-b border-zinc-200 flex justify-center">
 				{/* inner content */}
@@ -171,48 +170,58 @@ function MainPage() {
 				</div>
 			</nav>
 			
-			{/* main body (wrapper) */}
-			<main className="grow flex flex-col justify-center">
-				{/* inner content */}
-				<div className="max-w-screen-lg m-auto p-4 flex items-start grow gap-3 w-full">
-					{/* seating card */}
-					<div className="bg-white rounded-md grow grid p-3 self-stretch shadow-sm" style={{
+		{/* main body (wrapper) */}
+		<main className="grow flex flex-col justify-center bg-white">
+			{/* inner content */}
+			<div className="max-w-screen-lg m-auto p-4 flex flex-col lg:flex-row gap-3">
+				{/* seating card */}
+
+					<div className="bg-white rounded-md grow shadow-sm lg:w-1/2">
+					{/* <div className="bg-white p-4 grow gap-3 w-full lg:w-1/2"> */}
+
+				{/* seating map */}
+				<div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10" style={{
 						gridTemplateColumns: 'repeat(auto-fill, minmax(40px, 1fr))',
 						gridAutoRows: '40px'
 					}}>
-						{/*	seating map */}
-						{
-							seatData?.seatRows.map((row) => (
-								row.seats.map((seat) => (
-									<Seat key={seat.seatId} data={seat} row={row.seatRow} ticketTypes={seatData.ticketTypes} addToCart={addToCart} removeFromCart={removeFromCart} />
-								))
-								))
-						}
-					</div>
-					
-					{/* event info */}
-					<aside className="w-full max-w-sm bg-white rounded-md shadow-sm p-3 flex flex-col gap-2">
-						{/* event header image placeholder */}
-						<div>
-							<img src={eventData?.headerImageUrl} />
-						</div>
-						{/* event name */}
-						<h1 className="text-xl text-zinc-900 font-semibold">{eventData?.namePub}</h1>
-						{/* event description */}
-						<p className="text-sm text-zinc-500">{eventData?.description}</p>
-						{/* add to Detail button */}
-						<Link to={'/eventDetail'}>
-							<Button className='w-full' variant="default">
-								Detail
-							</Button>
-						</Link>
-						{/* add to calendar button */}
-						<Button variant="secondary" disabled>
-							Add to calendar
-						</Button>
-					</aside>
+					{seatData?.seatRows.map((row) =>
+					row.seats.map((seat) => (
+						<Seat
+						key={seat.seatId}
+						data={seat}
+						row={row.seatRow}
+						ticketTypes={seatData.ticketTypes}
+						addToCart={addToCart}
+						removeFromCart={removeFromCart}
+						/>
+					))
+					)}
 				</div>
-			</main>
+			</div>
+
+				{/* event info */}
+				<aside className="bg-white rounded-md shadow-sm p-3 flex flex-col gap-2 lg:w-1/2">
+					{/* event header image placeholder */}
+					<div>
+						<img src={eventData?.headerImageUrl} alt="Event header" />
+					</div>
+					{/* event name */}
+					<h1 className="text-xl text-zinc-900 font-semibold">{eventData?.namePub}</h1>
+					{/* event description */}
+					<p className="text-sm text-zinc-500">{eventData?.description}</p>
+					{/* add to Detail button */}
+					<Link to={'/eventDetail'}>
+						<Button className='w-full' variant="default">
+						Detail
+						</Button>
+					</Link>
+					{/* add to calendar button */}
+					<Button variant="secondary" disabled>
+						Add to calendar
+					</Button>
+				</aside>
+			</div>
+		</main>
 			
 			{/* bottom cart affix (wrapper) */}
 			<nav className="sticky bottom-0 left-0 right-0 bg-white border-t border-zinc-200 flex justify-center">

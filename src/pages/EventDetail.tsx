@@ -21,19 +21,18 @@ const EventDetail: React.FC = (props) => {
 		fetchData();
 	  }, []);
 
+    const getDate = (time) => {
+        const date = new Date(time);
+        const formattedTime = date.toLocaleTimeString('cs-CZ');
+        const formattedDate = date.toLocaleDateString('cs-CZ');
+        const formattedDateTime = `${formattedTime} ${formattedDate}`;
 
-      const getDate = (time) => {
-          const date = new Date(time);
-          const formattedTime = date.toLocaleTimeString('cs-CZ');
-          const formattedDate = date.toLocaleDateString('cs-CZ');
-          const formattedDateTime = `${formattedTime} ${formattedDate}`;
-
-          return formattedDateTime;
-      }
+        return formattedDateTime;
+    }
 
     return (
-        <div className='bg-white text-center min-h-screen text-black'>
-            <div className='flex flex-col h-screen justify-between container'>
+        <div className='bg-white text-center h-full text-black'>
+            <div className='flex flex-col min-h-screen justify-between container'>
                 <div className='mt-8'>
                     <img className='h-10 mx-auto rounded-lg' style={{height: "200px"}} src={eventData?.headerImageUrl} alt="Header" />
                     <h1 className='text-2xl pt-5'><strong>{eventData?.namePub}</strong></h1>

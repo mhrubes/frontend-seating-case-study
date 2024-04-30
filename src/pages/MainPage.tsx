@@ -221,7 +221,7 @@ function MainPage() {
 					{/* total in cart state */}
 					<div className="flex flex-col">
 						<span className='text-black'>Total for {cartItems.length} tickets</span>
-						<span className="text-2xl text-black font-semibold"> {totalPrice} CZK</span>
+						<span className="text-2xl text-black font-semibold"> {totalPrice} {eventData?.currencyIso}</span>
 					</div>
 					
 					{/* checkout button */}

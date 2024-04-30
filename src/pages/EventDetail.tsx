@@ -39,8 +39,11 @@ const EventDetail: React.FC = (props) => {
                     <h1 className='text-2xl pt-5'><strong>{eventData?.namePub}</strong></h1>
                     <p className='pt-5 text-center'> {eventData?.description} </p>
 
-                    <h3 className='text-xl mt-10'><strong>Čas a Datum konání</strong></h3>
-                    <p className='text-xl mt-2'><strong> {getDate(eventData?.dateFrom)} - {getDate(eventData?.dateTo)} </strong></p>
+                    <h3 className='text-xl mt-10'><strong>Kdy?</strong></h3>
+                    <p className='text-xl mt-2'>{getDate(eventData?.dateFrom)} - {getDate(eventData?.dateTo)}</p>
+
+                    <h3 className='text-xl mt-10'><strong>Kde?</strong></h3>
+                    <p className='text-xl mt-2'>{eventData?.place}</p>
                 </div>
 
                 <div className='mb-10'>

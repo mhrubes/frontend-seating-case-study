@@ -4,13 +4,13 @@ import { useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button.tsx';
 
-const EventDetail: React.FC = (props) => {
+import { useCart } from '../context/CartContext';
+import { useUser } from '../context/UserContext';
+
+const OrderDetail: React.FC = (props) => {
 	const [eventData, setEventData] = useState<any>(null);
 
-    // get id from URL
-    const location = useLocation();
-    const searchParams = new URLSearchParams(location.search);
-    const id = searchParams.get('id');
+    
   
     useEffect(() => {
 		const fetchData = async () => {
@@ -62,4 +62,4 @@ const EventDetail: React.FC = (props) => {
     );
 };
 
-export default EventDetail;
+export default OrderDetail;

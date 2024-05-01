@@ -130,13 +130,8 @@ const OrderDetail: React.FC = (props) => {
             } catch (error) {
                 setOrderProccessAnswer(500);
             }
-
-            console.log(data);
         }
     }
-
-    console.log(orderProccessAnswer);
-    
 
     return (
         <div className='bg-white text-center h-full text-black'>

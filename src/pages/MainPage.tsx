@@ -5,7 +5,7 @@ import { OrderModal } from '@/components/cart/OrderModal';
 import Login from '@/components/login/Login';
 import i18n from '../i18n';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import {
@@ -24,6 +24,7 @@ import { useUser } from '../context/UserContext';
 
 function MainPage() {
     const { t, i18n } = useTranslation();
+	const navigate = useNavigate();
 
 	const { cartItems, addToCart, removeFromCart } = useCart();
 	const { isLoggedIn, isHost, email, password, firstname, lastname, setIsHost, userLogin, userRegister, userLogout } = useUser();
@@ -105,8 +106,26 @@ function MainPage() {
 		setOrderModalIsOpen(true);
 	}
 
-	const closeOrderModal = () => {
-		setOrderModalIsOpen(false);
+	const closeOrderModal = (select: any) => {
+		if (select === "user") {
+			setOrderModalIsOpen(false);
+
+			if (isLoggedIn) {
+				navigate('/orderDetail');
+			}
+			else {
+				setLoginModalIsOpen(true);
+			}
+		}
+		else if (select === "host") {
+			setOrderModalIsOpen(false);
+			setIsHost(true);
+
+			navigate('/orderDetail');
+		}
+		else {
+			setOrderModalIsOpen(false);
+		}
 	}
 
 	return (

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Seat } from '@/components/Seat.tsx';
 import { CartDetail } from '@/components/cart/CartDetail';
 import Login from '@/components/login/Login';
+import i18n from '../i18n';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx';
@@ -18,21 +19,19 @@ import {
 } from '@/components/ui/dropdown-menu.tsx';
 // import '../App.css';
 
+import { useCart } from '../context/CartContext';
+import { useUser } from '../context/UserContext';
+
 function MainPage() {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
 
-	const [isLoggedIn, setIsLogedIn] = useState(false);
-
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
-	const [firstname, setFirstname] = useState('');
-	const [lastname, setLastname] = useState('');
+	const { cartItems, addToCart, removeFromCart } = useCart();
+	const { isLoggedIn, email, password, firstname, lastname, userLogin, userRegister, userLogout } = useUser();
   
 	const [eventData, setEventData] = useState<any>(null);
 	const [seatData, setSeatData] = useState<any>(null);
 	const [seatTicketPrice, setSeatTicketPrice] = useState<any>(null);
 
-	const [cartItems, setCartItems] = useState<any[]>([]);
 	const [totalPrice, setTotalPrice] = useState<any[]>(0);
 
 	const [cartModalIsOpen, setCartModalIsOpen] = useState(false);
@@ -64,14 +63,16 @@ function MainPage() {
 		
 		setTotalPrice(newTotalPrice);
 	}, [cartItems, seatTicketPrice]);
-	  
 
-	const addToCart = (item: any, price: number) => {
-		setCartItems(prevItems => [...prevItems, {...item, price}]);
+	// Cart Section
+	// Add to Cart
+	const handleAddToCart = (item: any, price: number) => {
+		addToCart(item, price)
 	};
 
-	const removeFromCart = (item: any) => {
-		setCartItems(prevItems => prevItems.filter(cartItem => cartItem.seatId !== item.data.seatId));
+	// Remove from Cart
+	const handleRemoveFromCart = (item: any) => {
+		removeFromCart(item.data.seatId);
 	};
 
 	const openCartModal = () => {
@@ -79,30 +80,24 @@ function MainPage() {
 			setCartModalIsOpen(true);
 		}
 	};
+	// Cart Section
 
-	const userLogin = (item: any) => {
-		setEmail(item?.user?.email);
-		setFirstname(item?.user?.firstName);
-		setLastname(item?.user?.lastName);
-
-		setIsLogedIn(true);
+	// User Section
+	// Login User
+	const handleUserLogin = (item: any) => {
+		userLogin(item);
 	};
 
-	const userRegister = (item: any) => {
-		setEmail(item?.email);
-		setPassword(item?.email);
-		setFirstname(item?.firstname);
-		setLastname(item?.lastname);
-
-		setIsLogedIn(true);
+	// Register User
+	const handleUserRegister = (item: any) => {
+		userRegister(item);
 	};
 
+	// Logout User
 	const logout = () => {
-		setEmail('');
-		setFirstname('');
-		setLastname('');
-		setIsLogedIn(false);
+		userLogout()
 	}
+	// User Section
 
 	const closeCartModal = () => {
 		setCartModalIsOpen(false);
@@ -191,8 +186,8 @@ function MainPage() {
 						data={seat}
 						row={row.seatRow}
 						ticketTypes={seatData.ticketTypes}
-						addToCart={addToCart}
-						removeFromCart={removeFromCart}
+						addToCart={handleAddToCart}
+						removeFromCart={handleRemoveFromCart}
 						/>
 					))
 					)}
@@ -250,7 +245,7 @@ function MainPage() {
 					</Button>
 
 					{LoginModalIsOpen &&
-						<Login closeLoginModal={closeLoginModal} userLogin={userLogin} userRegister={userRegister} />
+						<Login closeLoginModal={closeLoginModal} userLogin={handleUserLogin} userRegister={handleUserRegister} />
 					}
 
 				</div>

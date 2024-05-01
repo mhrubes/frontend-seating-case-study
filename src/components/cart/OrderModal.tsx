@@ -1,16 +1,15 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button.tsx';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.tsx';
 import { cn } from '@/lib/utils.ts';
 import React from 'react';
 
-interface CartProps extends React.HTMLAttributes<HTMLElement> {
+interface OrderModalProps extends React.HTMLAttributes<HTMLElement> {
 }
 
-export const CartDetail = React.forwardRef<HTMLDivElement, CartProps>((props, ref) => {
+export const OrderModal = React.forwardRef<HTMLDivElement, OrderModalProps>((props, ref) => {
 
     const handleCloseModal = () => {
-		props.closeCartModal(false);
+		props.closeOrderModal(false);
 	  };
 
 	return (

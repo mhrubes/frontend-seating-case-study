@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Seat } from '@/components/Seat.tsx';
-import { CartDetail } from '@/components/cart/CartDetail';
+import { OrderModal } from '@/components/cart/OrderModal';
 import Login from '@/components/login/Login';
 import i18n from '../i18n';
 import { useTranslation } from 'react-i18next';
@@ -26,7 +26,7 @@ function MainPage() {
     const { t, i18n } = useTranslation();
 
 	const { cartItems, addToCart, removeFromCart } = useCart();
-	const { isLoggedIn, email, password, firstname, lastname, userLogin, userRegister, userLogout } = useUser();
+	const { isLoggedIn, isHost, email, password, firstname, lastname, setIsHost, userLogin, userRegister, userLogout } = useUser();
   
 	const [eventData, setEventData] = useState<any>(null);
 	const [seatData, setSeatData] = useState<any>(null);
@@ -34,8 +34,8 @@ function MainPage() {
 
 	const [totalPrice, setTotalPrice] = useState<any[]>(0);
 
-	const [cartModalIsOpen, setCartModalIsOpen] = useState(false);
-	const [LoginModalIsOpen, setLoginModalIsOpen] = useState(false);
+	const [loginModalIsOpen, setLoginModalIsOpen] = useState(false);
+	const [orderModalIsOpen, setOrderModalIsOpen] = useState(false);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -74,12 +74,6 @@ function MainPage() {
 	const handleRemoveFromCart = (item: any) => {
 		removeFromCart(item.data.seatId);
 	};
-
-	const openCartModal = () => {
-		if (cartItems.length > 0) {
-			setCartModalIsOpen(true);
-		}
-	};
 	// Cart Section
 
 	// User Section
@@ -99,10 +93,6 @@ function MainPage() {
 	}
 	// User Section
 
-	const closeCartModal = () => {
-		setCartModalIsOpen(false);
-	};
-
 	const openLoginModal = () => {
 		setLoginModalIsOpen(true);
 	};
@@ -110,6 +100,14 @@ function MainPage() {
 	const closeLoginModal = () => {
 		setLoginModalIsOpen(false);
 	};
+
+	const openOrderModal = () => {
+		setOrderModalIsOpen(true);
+	}
+
+	const closeOrderModal = () => {
+		setOrderModalIsOpen(false);
+	}
 
 	return (
 		<div className="flex flex-col grow ">
@@ -224,27 +222,25 @@ function MainPage() {
 				<div className="max-w-screen-lg p-6 flex justify-between items-center gap-4 grow">
 					{/* total in cart state */}
 					<div className="flex flex-col">
-						<span className='text-black'>Total for {cartItems.length} tickets</span>
+						<span className='text-black'>
+							Celkově za {cartItems.length} {cartItems.length === 0 ? "vstupenek" 
+							: cartItems.length === 1 ? "vstupenku" 
+							: cartItems.length >= 5 ? "vstupenek" 
+							: "vstupenky"}
+						</span>
 						<span className="text-2xl text-black font-semibold"> {totalPrice} {eventData?.currencyIso}</span>
 					</div>
 					
 					{/* checkout button */}
-
-					{cartItems.length > 0 &&
-						<Button variant="default" onClick={openCartModal}>
-							Cart
-						</Button>
-					}
-
-					{(cartModalIsOpen && cartItems.length > 0) && (
-						<CartDetail closeCartModal={closeCartModal} />
-					)}
-
-					<Button variant="default" onClick={openLoginModal}>
+					<Button variant="default" onClick={openOrderModal}>
 						Checkout now
 					</Button>
 
-					{LoginModalIsOpen &&
+					{orderModalIsOpen &&
+						<OrderModal closeOrderModal={closeOrderModal} />
+					}
+
+					{loginModalIsOpen &&
 						<Login closeLoginModal={closeLoginModal} userLogin={handleUserLogin} userRegister={handleUserRegister} />
 					}
 

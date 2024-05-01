@@ -31,15 +31,29 @@ const OrderDetail: React.FC = (props) => {
 		fetchData();
 	  }, []);
 
-      const handleRemoveFromCart = (data: any) => {
-        console.log(data);
-
+    const handleRemoveFromCart = (data: any) => {
         removeFromCart(data?.seatId)
-        
-		// props.removeFromCart(data);
-		// setIsInCart(false);
-	  };
+    
+    // props.removeFromCart(data);
+    // setIsInCart(false);
+    };
 
+    const sortedCartItems = cartItems.sort((a, b) => {
+        if (a.row !== b.row) {
+            return a.row - b.row;
+        }
+        return a.place - b.place;
+    });
+    
+    const groupedSeats = sortedCartItems.reduce((acc, seat) => {
+        // If Row doesn't exist, create it
+        if (!acc[seat.row]) {
+            acc[seat.row] = [];
+        }
+        // Added seat
+        acc[seat.row].push(seat);
+        return acc;
+    }, {});
 
     return (
         <div className='bg-white text-center h-full text-black'>
@@ -47,38 +61,38 @@ const OrderDetail: React.FC = (props) => {
                 <div className='mt-8'>
                     <img className='h-10 mx-auto rounded-lg' style={{height: "200px"}} src={eventData?.headerImageUrl} alt="Header" />
                     <h1 className='text-2xl pt-5'><strong>{eventData?.namePub}</strong></h1>
-
+    
                     {/* seating map */}
                     <div className="text-center" style={{
                             gridTemplateColumns: 'repeat(auto-fill, minmax(40px, 1fr))',
                             gridAutoRows: '40px'
                         }}>
-                        {cartItems.map((data, index) => (
+                        {cartItems.map((seat, index) => (
                             <Popover key={index}>
-                            <PopoverTrigger>
-                                <div className={cn('size-8 rounded-full bg-zinc-100 hover:bg-zinc-200 transition-color', props.className)}>
-                                    <span className="text-xs text-zinc-400 font-medium">[n]</span>
-                                </div>
-                            </PopoverTrigger>
-                            <PopoverContent>
-                                <pre>
-                                    <p>Místo - {data?.place}</p>
-                                    <p>Řada - {data?.row}</p>
-                                    <p>Typ tiketu - {seatTicketPrice[0]?.id === data?.ticketTypeId ? seatTicketPrice[1]?.name : seatTicketPrice[0]?.name}</p>
-                                    <p>Cena tiketu - {seatTicketPrice[0]?.id === data?.ticketTypeId ? seatTicketPrice[1].price : seatTicketPrice[0].price}</p>
-                                </pre>
-                
-                                <footer className="flex flex-col">{
-                                    <Button variant="destructive" size="sm" onClick={() => handleRemoveFromCart(data)}>
-                                        Remove from cart
-                                    </Button>
-                                }</footer>
-                            </PopoverContent>
-                        </Popover>
-                		))}
-				    </div>
+                                <PopoverTrigger>
+                                    <div className={cn('size-8 rounded-full bg-zinc-100 hover:bg-zinc-200 transition-color m-1', props.className)}>
+                                        <span className="text-xs text-zinc-400 font-medium">[n]</span>
+                                    </div>
+                                </PopoverTrigger>
+                                <PopoverContent>
+                                    <pre>
+                                        <p>Místo - {seat?.place}</p>
+                                        <p>Řada - {seat?.row}</p>
+                                        <p>Typ tiketu - {seatTicketPrice[0]?.id === seat?.ticketTypeId ? seatTicketPrice[1]?.name : seatTicketPrice[0]?.name}</p>
+                                        <p>Cena tiketu - {seatTicketPrice[0]?.id === seat?.ticketTypeId ? seatTicketPrice[1].price : seatTicketPrice[0].price}</p>
+                                    </pre>
+                        
+                                    <footer className="flex flex-col">
+                                        <Button variant="destructive" size="sm" onClick={() => handleRemoveFromCart(seat)}>
+                                            Remove from cart
+                                        </Button>
+                                    </footer>
+                                </PopoverContent>
+                            </Popover>
+                        ))}
+                    </div>
                 </div>
-
+    
                 <div className='mb-10'>
                     <Link to='/'>
                         <Button className='w-40' variant="default">
@@ -89,6 +103,7 @@ const OrderDetail: React.FC = (props) => {
             </div>
         </div>
     );
+    
 };
 
 export default OrderDetail;

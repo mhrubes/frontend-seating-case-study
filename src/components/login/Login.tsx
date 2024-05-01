@@ -23,22 +23,22 @@ const Login = React.forwardRef<HTMLDivElement, LoginProps>((props, ref) => {
     e.preventDefault();
 
     if (selectOfType === 'login') {
-            let data = {
-                email: email,
-                password: password
-            };
+      let data = {
+          email: email,
+          password: password
+      };
 
-            axios.post('https://nfctron-frontend-seating-case-study-2024.vercel.app/login', data)
-            .then(response => {
-                if (response?.status === 200) {
-                    props.userLogin(response?.data)
-                    handleCloseModal();
-                }
-            })
-            .catch(error => {
-              setLoginError(error.response?.data?.message)
-              return error;
-            });
+      axios.post('https://nfctron-frontend-seating-case-study-2024.vercel.app/login', data)
+      .then(response => {
+          if (response?.status === 200) {
+              props.userLogin(response?.data)
+              handleCloseModal();
+          }
+      })
+      .catch(error => {
+        setLoginError(error.response?.data?.message)
+        return error;
+      });
     }
 
     if (selectOfType === 'register') {

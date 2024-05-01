@@ -24,7 +24,7 @@ export const UserProvider = ({ children }) => {
 
   // Register User
 	const userRegister = (item: any) => {
-    setEmail(item?.email);
+    	setEmail(item?.email);
 		setPassword(item?.email);
 		setFirstname(item?.firstname);
 		setLastname(item?.lastname);
@@ -41,7 +41,7 @@ export const UserProvider = ({ children }) => {
 	}
 
   return (
-    <UserContext.Provider value={{ isLoggedIn, isHost, email, password, firstname, lastname, setIsHost, userLogin, userRegister, userLogout }}>
+    <UserContext.Provider value={{ isLoggedIn, isHost, email, password, firstname, lastname, setIsHost, userLogin, userRegister, userLogout, setEmail, setFirstname, setLastname }}>
       {children}
     </UserContext.Provider>
   );

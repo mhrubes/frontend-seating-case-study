@@ -168,7 +168,7 @@ function MainPage() {
 				<div className="max-w-screen-lg p-4 grow flex items-center justify-between gap-3">
 					{/* application/author image/logo placeholder */}
 					<div className="max-w-[250px] w-full flex">
-						{windowWidth >= 450 &&
+						{windowWidth >= 450 && isLoggedIn &&
 						<div className="bg-zinc-100 rounded-md">
 						<Avatar>
 							<AvatarImage src={`https://source.boringavatars.com/marble/120/<user-email>?colors=25106C,7F46DB`} />

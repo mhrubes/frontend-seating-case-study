@@ -66,8 +66,8 @@ function MainPage() {
 
 	// Cart Section
 	// Add to Cart
-	const handleAddToCart = (item: any, price: number) => {
-		addToCart(item, price)
+	const handleAddToCart = (item: any, price: number, row: number) => {
+		addToCart(item, price, row)
 	};
 
 	// Remove from Cart

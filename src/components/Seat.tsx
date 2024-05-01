@@ -30,8 +30,9 @@ export const Seat = React.forwardRef<HTMLDivElement, SeatProps>((props, ref) => 
 
 	const addToCart = (item: any) => {
 		let price = data?.ticketTypes[0].id === item?.ticketTypeId ? 1000 : 2000;
+		let row = data?.row;
 
-		props.addToCart(props?.data, price);
+		props.addToCart(props?.data, price, row);
 		setIsInCart(true);
 	};
 

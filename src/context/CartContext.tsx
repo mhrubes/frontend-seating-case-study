@@ -7,9 +7,9 @@ export const useCart = () => useContext(CartContext);
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
 
-  const addToCart = (item: any, price: number, row: number) => {
+  const addToCart = (item: any, price: number, row: number, isInCart: boolean) => {
     
-    setCartItems((prevItems) => [...prevItems, {...item, price, row}]);
+    setCartItems((prevItems) => [...prevItems, {...item, price, row, isInCart}]);
   };
 
   const removeFromCart = (itemId) => {

@@ -1,44 +1,52 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button.tsx';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.tsx';
 import { cn } from '@/lib/utils.ts';
 import React from 'react';
 
 interface SeatProps extends React.HTMLAttributes<HTMLElement> {
-	data: {
-		ticketTypes: {
-		  id: string;
-		  name: string;
-		  price: number;
-		}[];
-		seatRows: {
-		  seatRow: number;
-		  seats: {
-			seatId: string;
-			place: number;
-			ticketTypeId: string;
-			row: number
-		  }[];
-		}[];
-	  };	
+    data: {
+        ticketTypes: {
+            id: string;
+            name: string;
+            price: number;
+        }[];
+        seatRows: {
+            seatRow: number;
+            seats: {
+                seatId: string;
+                place: number;
+                ticketTypeId: string;
+                row: number;
+            }[];
+        }[];
+        isInCart: boolean; // Přidáme atribut isInCart do dat sedadla
+    };
+    addToCart: (item: any) => void;
+    removeFromCart: (item: any) => void;
 }
 
+
 export const Seat = React.forwardRef<HTMLDivElement, SeatProps>((props, ref) => {
-	const [isInCart, setIsInCart] = useState(false);
+    const [isInCart, setIsInCart] = useState(props.data.isInCart);
 
 	let data = props;
+
+	useEffect(() => {
+        setIsInCart(props.data.isInCart); // Aktualizace isInCart při změně props.data.isInCart
+    }, [props.data.isInCart]);
+
 
 	const addToCart = (item: any) => {
 		let price = data?.ticketTypes[0].id === item?.ticketTypeId ? data?.ticketTypes[1].price : data?.ticketTypes[0].price;
 		let row = data?.row;
+		let isInCart = true;
 
-		props.addToCart(props?.data, price, row);
-		setIsInCart(true);
+		props.addToCart(props?.data, price, row, isInCart);
 	};
 
 	const handleRemoveFromCart = () => {
 		props.removeFromCart(data);
-		setIsInCart(false);
 	  };
 
 	return (
@@ -59,8 +67,8 @@ export const Seat = React.forwardRef<HTMLDivElement, SeatProps>((props, ref) => 
 					{/* {JSON.stringify({ seatData: props.data, row: props.row, row: props.row }, null, 1)} */}
 					<p>Místo - {data?.data?.place}</p>
 					<p>Řada - {data?.row}</p>
-					<p>Typ tiketu - {data?.ticketTypes[0].id === data?.data?.ticketTypeId ? 'Regular Ticket' : 'VIP ticket'}</p>
-					<p>Cena tiketu - {data?.ticketTypes[0].id === data?.data?.ticketTypeId ? '1000' : '2000'}</p>
+					<p>Typ tiketu - {data?.ticketTypes[0]?.id === data?.data?.ticketTypeId ? data?.ticketTypes[1]?.name : data?.ticketTypes[0]?.name}</p>
+                    <p>Cena tiketu - {data?.ticketTypes[0]?.id === data?.data?.ticketTypeId ? data?.ticketTypes[1].price : data?.ticketTypes[0].price}</p>
 				</pre>
 
 				<footer className="flex flex-col">{

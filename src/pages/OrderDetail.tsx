@@ -3,15 +3,20 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button.tsx';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.tsx';
+import { cn } from '@/lib/utils.ts';
 
-import { useCart } from '../context/CartContext';
 import { useUser } from '../context/UserContext';
+import { useEvent } from '../context/EventContext';
+import { useCart } from '../context/CartContext';
 
 const OrderDetail: React.FC = (props) => {
 	const [eventData, setEventData] = useState<any>(null);
+	const [isInCart, setIsInCart] = useState(false);
 
-    
-  
+    const { cartItems, addToCart, removeFromCart } = useCart();
+    const { seatTicketPrice } = useEvent();
+
     useEffect(() => {
 		const fetchData = async () => {
 		  try {
@@ -26,14 +31,15 @@ const OrderDetail: React.FC = (props) => {
 		fetchData();
 	  }, []);
 
-    const getDate = (time) => {
-        const date = new Date(time);
-        const formattedTime = date.toLocaleTimeString('cs-CZ');
-        const formattedDate = date.toLocaleDateString('cs-CZ');
-        const formattedDateTime = `${formattedTime} ${formattedDate}`;
+      const handleRemoveFromCart = (data: any) => {
+        console.log(data);
 
-        return formattedDateTime;
-    }
+        removeFromCart(data?.seatId)
+        
+		// props.removeFromCart(data);
+		// setIsInCart(false);
+	  };
+
 
     return (
         <div className='bg-white text-center h-full text-black'>
@@ -41,13 +47,36 @@ const OrderDetail: React.FC = (props) => {
                 <div className='mt-8'>
                     <img className='h-10 mx-auto rounded-lg' style={{height: "200px"}} src={eventData?.headerImageUrl} alt="Header" />
                     <h1 className='text-2xl pt-5'><strong>{eventData?.namePub}</strong></h1>
-                    <p className='pt-5 text-center'> {eventData?.description} </p>
 
-                    <h3 className='text-xl mt-10'><strong>Kdy?</strong></h3>
-                    <p className='text-xl mt-2'>{getDate(eventData?.dateFrom)} - {getDate(eventData?.dateTo)}</p>
-
-                    <h3 className='text-xl mt-10'><strong>Kde?</strong></h3>
-                    <p className='text-xl mt-2'>{eventData?.place}</p>
+                    {/* seating map */}
+                    <div className="text-center" style={{
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(40px, 1fr))',
+                            gridAutoRows: '40px'
+                        }}>
+                        {cartItems.map((data, index) => (
+                            <Popover key={index}>
+                            <PopoverTrigger>
+                                <div className={cn('size-8 rounded-full bg-zinc-100 hover:bg-zinc-200 transition-color', props.className)}>
+                                    <span className="text-xs text-zinc-400 font-medium">[n]</span>
+                                </div>
+                            </PopoverTrigger>
+                            <PopoverContent>
+                                <pre>
+                                    <p>Místo - {data?.place}</p>
+                                    <p>Řada - {data?.row}</p>
+                                    <p>Typ tiketu - {seatTicketPrice[0]?.id === data?.ticketTypeId ? seatTicketPrice[1]?.name : seatTicketPrice[0]?.name}</p>
+                                    <p>Cena tiketu - {seatTicketPrice[0]?.id === data?.ticketTypeId ? seatTicketPrice[1].price : seatTicketPrice[0].price}</p>
+                                </pre>
+                
+                                <footer className="flex flex-col">{
+                                    <Button variant="destructive" size="sm" onClick={() => handleRemoveFromCart(data)}>
+                                        Remove from cart
+                                    </Button>
+                                }</footer>
+                            </PopoverContent>
+                        </Popover>
+                		))}
+				    </div>
                 </div>
 
                 <div className='mb-10'>

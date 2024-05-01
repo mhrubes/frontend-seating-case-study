@@ -30,14 +30,11 @@ function MainPage() {
 	const navigate = useNavigate();
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
+	const { eventData, seatData, seatTicketPrice } = useEvent();
 	const { cartItems, addToCart, removeFromCart } = useCart();
 	const { isLoggedIn, isHost, email, password, firstname, lastname, setIsHost, userLogin, userRegister, userLogout } = useUser();
-	const { eventData, seatData, seatTicketPrice } = useEvent();
 
-	// const [eventData, setEventData] = useState<any>(null);
-	// const [seatData, setSeatData] = useState<any>(null);
-	// const [seatTicketPrice, setSeatTicketPrice] = useState<any>(null);
-
+	const [updatedSeatsWithCartInfo, setUpdatedSeatsWithCartInfo] = useState([]);
 	const [totalPrice, setTotalPrice] = useState<any[]>(0);
 
 	const [loginModalIsOpen, setLoginModalIsOpen] = useState(false);
@@ -63,14 +60,42 @@ function MainPage() {
 		setTotalPrice(newTotalPrice);
 	}, [cartItems, seatTicketPrice]);
 
+	useEffect(() => {
+		// Create new Array of Objects compared with cartItems
+		const updatedSeats = seatData?.seatRows.map(row => {
+			const updatedSeatsInRow = row.seats.map(seat => {
+				const isInCart = cartItems.some(item => item.seatId === seat.seatId);
+				return { ...seat, isInCart };
+			});
+			return { ...row, seats: updatedSeatsInRow };
+		});
+
+		setUpdatedSeatsWithCartInfo(updatedSeats);
+	}, [seatData, cartItems]);
+
 	// Cart Section
 	// Add to Cart
-	const handleAddToCart = (item: any, price: number, row: number) => {
-		addToCart(item, price, row)
+	const handleAddToCart = (item: any, price: number, row: number, isInCart: boolean) => {
+		addToCart(item, price, row, isInCart);
 	};
 
 	// Remove from Cart
 	const handleRemoveFromCart = (item: any) => {
+		const updatedSeatsCopy = updatedSeatsWithCartInfo.map(row => ({
+			...row, seats: row.seats.map(seat => {
+				if (seat.seatId === item.data.seatId) {
+					return {
+						...seat,
+						isInCart: false // change boolean value
+					};
+				}
+				return seat; // return if nothing change
+			})
+		}));
+	
+		// Update Array of Object
+		setUpdatedSeatsWithCartInfo(updatedSeatsCopy);
+
 		removeFromCart(item.data.seatId);
 	};
 	// Cart Section
@@ -125,6 +150,15 @@ function MainPage() {
 			setOrderModalIsOpen(false);
 		}
 	}
+
+	// {updatedSeatsWithCartInfo && updatedSeatsWithCartInfo.map((row) => (
+	// 	row.seats.map((seat) => {
+	// 		console.log(row);
+			
+	// 	  console.log(seat); // Vypsat sedadlo do konzole
+	// 	  return null; // Musíte vracet něco, pokud jste uvnitř map, ale chcete jen vypsat do konzole
+	// 	})
+	// ))}
 
 	return (
 		<div className="flex flex-col grow ">
@@ -201,25 +235,38 @@ function MainPage() {
 					)
 				}
 
-
-				{/* seating map */}
-				<div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10" style={{
-						gridTemplateColumns: 'repeat(auto-fill, minmax(40px, 1fr))',
-						gridAutoRows: '40px'
-					}}>
-						{seatData?.seatRows.map((row) =>
-						row.seats.map((seat) => (
-							<Seat
-							key={seat.seatId}
-							data={seat}
-							row={row.seatRow}
-							ticketTypes={seatData.ticketTypes}
-							addToCart={handleAddToCart}
-							removeFromCart={handleRemoveFromCart}
-							/>
-						))
-					)}
+			{updatedSeatsWithCartInfo ? (
+				<div className='text-black'>
+					{/* Div kontejner */}
+					<div className='grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10'
+						style={{
+							gridTemplateColumns: 'repeat(auto-fill, minmax(40px, 1fr))',
+							gridAutoRows: '40px'
+						}}>
+						{/* Mapping all rows */}
+						{updatedSeatsWithCartInfo.map((row) => (
+							<React.Fragment key={row.seatRow}>
+								{/* Mapping inside row */}
+								{row.seats.map((seat) => (
+									<div key={seat.seatId}>
+										<Seat
+											key={seat.seatId}
+											data={seat}
+											row={row.seatRow}
+											ticketTypes={seatData.ticketTypes}
+											addToCart={handleAddToCart}
+											removeFromCart={handleRemoveFromCart}
+										/>
+									</div>
+								))}
+							</React.Fragment>
+						))}
+					</div>
 				</div>
+			) : (
+				// Loading before updatedSeatsWithCartInfo
+				<div>Loading...</div>
+			)}
 			</div>
 
 			{windowWidth >= 1024 &&

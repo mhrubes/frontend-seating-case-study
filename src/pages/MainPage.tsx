@@ -21,8 +21,9 @@ import { OrderModal } from '@/components/cart/OrderModal';
 import { EventAside } from '@/components/EventAside';
 import Login from '@/components/login/Login';
 
-import { useCart } from '../context/CartContext';
 import { useUser } from '../context/UserContext';
+import { useEvent } from '../context/EventContext';
+import { useCart } from '../context/CartContext';
 
 function MainPage() {
     const { t, i18n } = useTranslation();
@@ -31,10 +32,11 @@ function MainPage() {
 
 	const { cartItems, addToCart, removeFromCart } = useCart();
 	const { isLoggedIn, isHost, email, password, firstname, lastname, setIsHost, userLogin, userRegister, userLogout } = useUser();
-  
-	const [eventData, setEventData] = useState<any>(null);
-	const [seatData, setSeatData] = useState<any>(null);
-	const [seatTicketPrice, setSeatTicketPrice] = useState<any>(null);
+	const { eventData, seatData, seatTicketPrice } = useEvent();
+
+	// const [eventData, setEventData] = useState<any>(null);
+	// const [seatData, setSeatData] = useState<any>(null);
+	// const [seatTicketPrice, setSeatTicketPrice] = useState<any>(null);
 
 	const [totalPrice, setTotalPrice] = useState<any[]>(0);
 
@@ -42,23 +44,6 @@ function MainPage() {
 	const [orderModalIsOpen, setOrderModalIsOpen] = useState(false);
 
 	useEffect(() => {
-		const fetchData = async () => {
-		  try {
-			const responseEventData = await axios.get('https://nfctron-frontend-seating-case-study-2024.vercel.app/event');
-			setEventData(responseEventData.data);
-
-			if (responseEventData) {
-				const responseSeatData = await axios.get('https://nfctron-frontend-seating-case-study-2024.vercel.app/event-tickets?eventId=' + responseEventData.data?.eventId);
-				setSeatData(responseSeatData.data);
-				setSeatTicketPrice(responseSeatData.data.ticketTypes);
-			}
-		  } catch (error) {
-			console.error('Error fetching eventData:', error);
-		  }
-		};
-	
-		fetchData();
-
 		const handleResize = () => {
             setWindowWidth(window.innerWidth);
         };

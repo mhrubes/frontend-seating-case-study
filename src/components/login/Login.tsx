@@ -24,33 +24,33 @@ const Login = React.forwardRef<HTMLDivElement, LoginProps>((props, ref) => {
 
     if (selectOfType === 'login') {
       let data = {
-          email: email,
-          password: password
+        email: email,
+        password: password
       };
 
       axios.post('https://nfctron-frontend-seating-case-study-2024.vercel.app/login', data)
-      .then(response => {
+        .then(response => {
           if (response?.status === 200) {
-              props.userLogin(response?.data)
-              handleCloseModal();
+            props.userLogin(response?.data)
+            handleCloseModal();
           }
-      })
-      .catch(error => {
-        setLoginError(error.response?.data?.message)
-        return error;
-      });
+        })
+        .catch(error => {
+          setLoginError(error.response?.data?.message)
+          return error;
+        });
     }
 
     if (selectOfType === 'register') {
-        let data = {
-            email: email,
-            password: password,
-            firstname: firstname,
-            lastname: lastname
-        };
+      let data = {
+        email: email,
+        password: password,
+        firstname: firstname,
+        lastname: lastname
+      };
 
-        props.userRegister(data);
-        handleCloseModal();
+      props.userRegister(data);
+      handleCloseModal();
     }
   };
 
@@ -74,72 +74,72 @@ const Login = React.forwardRef<HTMLDivElement, LoginProps>((props, ref) => {
             </div>
           </div>
 
-            {/* Login Section */}
-            {selectOfType === 'login' &&
+          {/* Login Section */}
+          {selectOfType === 'login' &&
             <form onSubmit={handleLogin}>
-                <div className="bg-gray-50 px-4 py-3 text-center">
-                    <input
-                        type="email"
-                        className="bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
-                        placeholder="E-mail"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        />
-                    <input
-                        type="password"
-                        className="mt-2 bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
-                        placeholder="Heslo"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        />
-                    <p className='text-red-500 mt-2'>{loginError}</p>
-                    <Button type="submit" variant="default" className='mt-2'>
-                        Přihlásit
-                    </Button>
+              <div className="bg-gray-50 px-4 py-3 text-center">
+                <input
+                  type="email"
+                  className="bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
+                  placeholder="E-mail"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <input
+                  type="password"
+                  className="mt-2 bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
+                  placeholder="Heslo"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <p className='text-red-500 mt-2'>{loginError}</p>
+                <Button type="submit" variant="default" className='mt-2'>
+                  Přihlásit
+                </Button>
 
-                </div>
+              </div>
             </form>
-            }
+          }
 
-            {/* Register Section */}
-            {selectOfType === 'register' &&
+          {/* Register Section */}
+          {selectOfType === 'register' &&
             <form onSubmit={handleLogin}>
-                <div className="bg-gray-50 px-4 py-3 text-center">
-                    <input
-                        type="text"
-                        className="bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
-                        placeholder="Firstname"
-                        value={firstname}
-                        onChange={(e) => setFirstname(e.target.value)}
-                        />
-                    <input
-                        type="text"
-                        className="mt-2 bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
-                        placeholder="Lastname"
-                        value={lastname}
-                        onChange={(e) => setLastname(e.target.value)}
-                        />
+              <div className="bg-gray-50 px-4 py-3 text-center">
+                <input
+                  type="text"
+                  className="bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
+                  placeholder="Firstname"
+                  value={firstname}
+                  onChange={(e) => setFirstname(e.target.value)}
+                />
+                <input
+                  type="text"
+                  className="mt-2 bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
+                  placeholder="Lastname"
+                  value={lastname}
+                  onChange={(e) => setLastname(e.target.value)}
+                />
 
-                    <input
-                        type="email"
-                        className="mt-2 bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
-                        placeholder="E-mail"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        />
-                    <input
-                        type="password"
-                        className="mt-2 bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
-                        placeholder="Heslo"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        />
-                    <Button type="submit" variant="default" className='mt-2'>
-                        Registrovat
-                    </Button>
-                </div>
+                <input
+                  type="email"
+                  className="mt-2 bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
+                  placeholder="E-mail"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <input
+                  type="password"
+                  className="mt-2 bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
+                  placeholder="Heslo"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <Button type="submit" variant="default" className='mt-2'>
+                  Registrovat
+                </Button>
+              </div>
             </form>
-            }
+          }
 
           <div className="bg-gray-50 pb-2 text-center">
             {selectOfType === "register" &&

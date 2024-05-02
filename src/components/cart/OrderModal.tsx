@@ -2,17 +2,17 @@ import { Button } from '@/components/ui/button.tsx';
 import { cn } from '@/lib/utils.ts';
 import React from 'react';
 
-interface OrderModalProps extends React.HTMLAttributes<HTMLElement> {}
+interface OrderModalProps extends React.HTMLAttributes<HTMLElement> { }
 
 export const OrderModal = React.forwardRef<HTMLDivElement, OrderModalProps>((props, ref) => {
 
-    const handleUserSelect = (select) => {
-        props.closeOrderModal(select);
-    };
+  const handleUserSelect = (select) => {
+    props.closeOrderModal(select);
+  };
 
-    const handleCloseModal = () => {
-        props.closeOrderModal();
-    };
+  const handleCloseModal = () => {
+    props.closeOrderModal();
+  };
 
   return (
     <div className="fixed z-10 inset-0 overflow-y-auto">
@@ -39,11 +39,11 @@ export const OrderModal = React.forwardRef<HTMLDivElement, OrderModalProps>((pro
           </div>
 
           <div className="bg-gray-50 pb-2 text-center">
-          <Button className='m-1' variant="default" onClick={() => handleUserSelect("user")}>
-                Uživatel
+            <Button className='m-1' variant="default" onClick={() => handleUserSelect("user")}>
+              Uživatel
             </Button>
             <Button className='m-1' variant="default" onClick={() => handleUserSelect("host")}>
-                Host
+              Host
             </Button>
           </div>
 

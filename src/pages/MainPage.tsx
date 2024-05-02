@@ -26,9 +26,9 @@ import { useEvent } from '../context/EventContext';
 import { useCart } from '../context/CartContext';
 
 function MainPage() {
-    const { t, i18n } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const navigate = useNavigate();
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+	const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
 	const { eventData, seatData, seatTicketPrice } = useEvent();
 	const { cartItems, addToCart, removeFromCart } = useCart();
@@ -42,21 +42,21 @@ function MainPage() {
 
 	useEffect(() => {
 		const handleResize = () => {
-            setWindowWidth(window.innerWidth);
-        };
+			setWindowWidth(window.innerWidth);
+		};
 
-        window.addEventListener('resize', handleResize);
+		window.addEventListener('resize', handleResize);
 
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-	  }, []);
+		return () => {
+			window.removeEventListener('resize', handleResize);
+		};
+	}, []);
 
 	useEffect(() => {
 		const newTotalPrice = cartItems.reduce((total, currentItem) => {
 			return total + currentItem.price;
-		  }, 0);
-		
+		}, 0);
+
 		setTotalPrice(newTotalPrice);
 	}, [cartItems, seatTicketPrice]);
 
@@ -92,7 +92,7 @@ function MainPage() {
 				return seat; // return if nothing change
 			})
 		}));
-	
+
 		// Update Array of Object
 		setUpdatedSeatsWithCartInfo(updatedSeatsCopy);
 
@@ -154,7 +154,7 @@ function MainPage() {
 	// {updatedSeatsWithCartInfo && updatedSeatsWithCartInfo.map((row) => (
 	// 	row.seats.map((seat) => {
 	// 		console.log(row);
-			
+
 	// 	  console.log(seat); // Vypsat sedadlo do konzole
 	// 	  return null; // Musíte vracet něco, pokud jste uvnitř map, ale chcete jen vypsat do konzole
 	// 	})
@@ -169,12 +169,12 @@ function MainPage() {
 					{/* application/author image/logo placeholder */}
 					<div className="max-w-[250px] w-full flex">
 						{windowWidth >= 450 && isLoggedIn &&
-						<div className="bg-zinc-100 rounded-md">
-						<Avatar>
-							<AvatarImage src={`https://source.boringavatars.com/marble/120/<user-email>?colors=25106C,7F46DB`} />
-							<AvatarFallback>CN</AvatarFallback>
-						</Avatar>
-						</div>
+							<div className="bg-zinc-100 rounded-md">
+								<Avatar>
+									<AvatarImage src={`https://source.boringavatars.com/marble/120/<user-email>?colors=25106C,7F46DB`} />
+									<AvatarFallback>CN</AvatarFallback>
+								</Avatar>
+							</div>
 						}
 					</div>
 					{/* user menu */}
@@ -189,7 +189,7 @@ function MainPage() {
 													<AvatarImage src={`https://source.boringavatars.com/marble/120/<user-email>?colors=25106C,7F46DB`} />
 													<AvatarFallback>CN</AvatarFallback>
 												</Avatar>
-												
+
 												<div className="flex flex-col text-left">
 													<span className="text-sm font-medium text-black"> {firstname} </span>
 													<span className="text-xs text-zinc-500"> {email} </span>
@@ -218,63 +218,63 @@ function MainPage() {
 					</div>
 				</div>
 			</nav>
-			
-		{/* main body (wrapper) */}
-		<main className="grow flex flex-col justify-center bg-white">
-			{/* inner content */}
-			<div className="max-w-screen-lg m-auto p-4 flex flex-col lg:flex-row gap-3">
-				{/* seating card */}
 
-				<div className="bg-white rounded-md grow shadow-sm lg:w-1/2">
+			{/* main body (wrapper) */}
+			<main className="grow flex flex-col justify-center bg-white">
+				{/* inner content */}
+				<div className="max-w-screen-lg m-auto p-4 flex flex-col lg:flex-row gap-3">
+					{/* seating card */}
 
-				{windowWidth < 1024 && (
-					<div>
+					<div className="bg-white rounded-md grow shadow-sm lg:w-1/2">
+
+						{windowWidth < 1024 && (
+							<div>
+								<EventAside data={eventData} />
+								<br />
+							</div>
+						)
+						}
+
+						{updatedSeatsWithCartInfo ? (
+							<div className='text-black'>
+								{/* Div kontejner */}
+								<div className='grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10'
+									style={{
+										gridTemplateColumns: 'repeat(auto-fill, minmax(40px, 1fr))',
+										gridAutoRows: '40px'
+									}}>
+									{/* Mapping all rows */}
+									{updatedSeatsWithCartInfo.map((row) => (
+										<React.Fragment key={row.seatRow}>
+											{/* Mapping inside row */}
+											{row.seats.map((seat) => (
+												<div key={seat.seatId}>
+													<Seat
+														key={seat.seatId}
+														data={seat}
+														row={row.seatRow}
+														ticketTypes={seatData.ticketTypes}
+														addToCart={handleAddToCart}
+														removeFromCart={handleRemoveFromCart}
+													/>
+												</div>
+											))}
+										</React.Fragment>
+									))}
+								</div>
+							</div>
+						) : (
+							// Loading before updatedSeatsWithCartInfo
+							<div>Loading...</div>
+						)}
+					</div>
+
+					{windowWidth >= 1024 &&
 						<EventAside data={eventData} />
-						<br/>
-					</div>
-					)
-				}
-
-			{updatedSeatsWithCartInfo ? (
-				<div className='text-black'>
-					{/* Div kontejner */}
-					<div className='grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10'
-						style={{
-							gridTemplateColumns: 'repeat(auto-fill, minmax(40px, 1fr))',
-							gridAutoRows: '40px'
-						}}>
-						{/* Mapping all rows */}
-						{updatedSeatsWithCartInfo.map((row) => (
-							<React.Fragment key={row.seatRow}>
-								{/* Mapping inside row */}
-								{row.seats.map((seat) => (
-									<div key={seat.seatId}>
-										<Seat
-											key={seat.seatId}
-											data={seat}
-											row={row.seatRow}
-											ticketTypes={seatData.ticketTypes}
-											addToCart={handleAddToCart}
-											removeFromCart={handleRemoveFromCart}
-										/>
-									</div>
-								))}
-							</React.Fragment>
-						))}
-					</div>
+					}
 				</div>
-			) : (
-				// Loading before updatedSeatsWithCartInfo
-				<div>Loading...</div>
-			)}
-			</div>
+			</main>
 
-			{windowWidth >= 1024 &&
-				<EventAside data={eventData} />
-			}
-			</div>
-		</main>
-			
 			{/* bottom cart affix (wrapper) */}
 			<nav className="sticky bottom-0 left-0 right-0 bg-white border-t border-zinc-200 flex justify-center">
 				{/* inner content */}
@@ -282,14 +282,14 @@ function MainPage() {
 					{/* total in cart state */}
 					<div className="flex flex-col">
 						<span className='text-black'>
-							Celkově za {cartItems.length} {cartItems.length === 0 ? "vstupenek" 
-							: cartItems.length === 1 ? "vstupenku" 
-							: cartItems.length >= 5 ? "vstupenek" 
-							: "vstupenky"}
+							Celkově za {cartItems.length} {cartItems.length === 0 ? "vstupenek"
+								: cartItems.length === 1 ? "vstupenku"
+									: cartItems.length >= 5 ? "vstupenek"
+										: "vstupenky"}
 						</span>
 						<span className="text-2xl text-black font-semibold"> {totalPrice} {eventData?.currencyIso}</span>
 					</div>
-					
+
 					{/* checkout button */}
 					<Button variant="default" onClick={openOrderModal}>
 						Checkout now

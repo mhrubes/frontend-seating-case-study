@@ -1,10 +1,13 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button.tsx';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface EventAsideProps extends React.HTMLAttributes<HTMLElement> { }
 
 export const EventAside = React.forwardRef<HTMLDivElement, EventAsideProps>((props) => {
+    const { t } = useTranslation();
+
     const eventData = props?.data;
 
     return (
@@ -20,12 +23,12 @@ export const EventAside = React.forwardRef<HTMLDivElement, EventAsideProps>((pro
             {/* add to Detail button */}
             <Link to={'/eventDetail' + '?id=' + eventData?.eventId}>
                 <Button className='w-full' variant="default">
-                    Detail
+                    {t('detail')}
                 </Button>
             </Link>
             {/* add to calendar button */}
-            <Button variant="secondary" disabled>
-                Přidat do kalendáře
+            <Button variant="secondary">
+                {t('toCalendar')}
             </Button>
         </aside>
     );

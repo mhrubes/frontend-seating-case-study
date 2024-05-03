@@ -5,35 +5,23 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button.tsx';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.tsx';
 import { cn } from '@/lib/utils.ts';
+import { useTranslation } from 'react-i18next';
 
 import { useUser } from '../context/UserContext';
 import { useEvent } from '../context/EventContext';
 import { useCart } from '../context/CartContext';
 
 const OrderDetail: React.FC = (props) => {
-    const [eventData, setEventData] = useState<any>(null);
+    const { t } = useTranslation();
 
     const { cartItems, addToCart, removeFromCart } = useCart();
+    const { eventData } = useEvent();
     const { seatTicketPrice } = useEvent();
     const { email, firstname, lastname, isHost, isLoggedIn, setEmail, setFirstname, setLastname, setIsHost } = useUser();
 
     const [totalPrice, setTotalPrice] = useState<any[]>(0);
     const [orderProccessAnswer, setOrderProccessAnswer] = useState();
     const [orderCompleted, setOrderCompleted] = useState(false);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const responseEventData = await axios.get('https://nfctron-frontend-seating-case-study-2024.vercel.app/event');
-                setEventData(responseEventData.data);
-
-            } catch (error) {
-                console.error('Error fetching eventData:', error);
-            }
-        };
-
-        fetchData();
-    }, []);
 
     useEffect(() => {
         const newTotalPrice = cartItems.reduce((total, currentItem) => {
@@ -154,16 +142,16 @@ const OrderDetail: React.FC = (props) => {
                                 </PopoverTrigger>
                                 <PopoverContent>
                                     <pre>
-                                        <p>Místo - {seat?.place}</p>
-                                        <p>Řada - {seat?.row}</p>
-                                        <p>Typ tiketu - {seatTicketPrice[0]?.id === seat?.ticketTypeId ? seatTicketPrice[1]?.name : seatTicketPrice[0]?.name}</p>
-                                        <p>Cena tiketu - {seatTicketPrice[0]?.id === seat?.ticketTypeId ? seatTicketPrice[1].price : seatTicketPrice[0].price}</p>
+                                        <p>{t('seatPopover.place')} - {seat?.place}</p>
+                                        <p>{t('seatPopover.row')} - {seat?.row}</p>
+                                        <p>{t('seatPopover.ticketType')} - {seatTicketPrice[0]?.id === seat?.ticketTypeId ? seatTicketPrice[1]?.name : seatTicketPrice[0]?.name}</p>
+                                        <p>{t('seatPopover.ticketPrice')} - {seatTicketPrice[0]?.id === seat?.ticketTypeId ? seatTicketPrice[1].price : seatTicketPrice[0].price}</p>
                                     </pre>
 
                                     {!orderCompleted &&
                                         <footer className="flex flex-col">
                                             <Button variant="destructive" size="sm" onClick={() => handleRemoveFromCart(seat)}>
-                                                Remove from cart
+                                                {t('seatPopover.removeFromCart')}
                                             </Button>
                                         </footer>
                                     }
@@ -174,8 +162,8 @@ const OrderDetail: React.FC = (props) => {
 
                     {cartItems.length !== 0 &&
                         <div className='mt-8 text-xl'>
-                            <p>Celkový počet vstupenek: <strong>{cartItems.length}</strong> </p>
-                            <p>Celková cena: <strong>{totalPrice}</strong> {eventData?.currencyIso}</p>
+                            <p dangerouslySetInnerHTML={{ __html: t('orderDetail.totalTickets', { total: cartItems.length }) }}></p>
+                            <p dangerouslySetInnerHTML={{ __html: t('orderDetail.totalPrice', { price: totalPrice, type: eventData?.currencyIso }) }}></p>
                         </div>
                     }
 
@@ -189,33 +177,33 @@ const OrderDetail: React.FC = (props) => {
 
                     {isHost && !orderCompleted && cartItems.length !== 0 && (
                         <div className='w-full text-center mt-10'>
-                            <h3>Vyplňte objednávku</h3>
+                            <h3>{t('orderDetail.orderHostHeadline')}</h3>
                             <form>
                                 <div className="bg-gray-50 px-4 py-3 text-center">
                                     <input
                                         type="email"
                                         className="bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
-                                        placeholder="E-mail *"
+                                        placeholder={`${t('formValues.email')} *`}
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                     />
                                     <input
                                         type="text"
                                         className="mt-2 bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
-                                        placeholder="Jméno *"
+                                        placeholder={`${t('formValues.firstname')} *`}
                                         value={firstname}
                                         onChange={(e) => setFirstname(e.target.value)}
                                     />
                                     <input
                                         type="text"
                                         className="mt-2 bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
-                                        placeholder="Příjmení *"
+                                        placeholder={`${t('formValues.lastname')} *`}
                                         value={lastname}
                                         onChange={(e) => setLastname(e.target.value)}
                                     />
                                     <p className='text-red-500 mt-2'></p>
                                     <Button className='mt-2' onClick={handleCreateOrder} variant="default" type='button'>
-                                        Odeslat objednávku
+                                        {t('orderDetail.sendOrder')}
                                     </Button>
                                 </div>
                             </form>
@@ -224,30 +212,24 @@ const OrderDetail: React.FC = (props) => {
 
                     {orderCompleted && orderProccessAnswer === 200 &&
                         <div>
-                            <p className='text-green-600'>
-                                Objednávka byla <strong>úspěšně</strong> vytvořena.
-                            </p>
+                            <p className='text-green-600' dangerouslySetInnerHTML={{ __html: t('customMessage.orderSuccess') }} />
                         </div>
                     }
                     {orderProccessAnswer === 400 &&
                         <div>
-                            <p className='text-red-400'>
-                                Nastala <strong>chyba</strong>. Zkontrolujte prosím vyplněná pole.
-                            </p>
+                            <p className='text-red-400' dangerouslySetInnerHTML={{ __html: t('customMessage.error400') }} />
                         </div>
                     }
                     {orderProccessAnswer === 500 &&
                         <div>
-                            <p className='text-red-400'>
-                                Musíte vyplnit <strong>všechna</strong> pole.
-                            </p>
+                            <p className='text-red-400' dangerouslySetInnerHTML={{ __html: t('customMessage.error500') }} />
                         </div>
                     }
 
                     {cartItems.length === 0 &&
-                        <div className='mt-5 text-lg'>
-                            Prozatím nemáte žádnou vstupenku v košíku
-                        </div>
+                        <p className='mt-5 text-lg'>
+                            {t('customMessage.emptyCart')}
+                        </p>
                     }
 
                 </div>
@@ -255,12 +237,12 @@ const OrderDetail: React.FC = (props) => {
                 <div className='mb-10'>
                     <Link to='/'>
                         <Button className='w-40' variant="default" onClick={() => setIsHost(false)}>
-                            Zpět
+                            {t('back')}
                         </Button>
                     </Link>
                 </div>
             </div>
-        </div>
+        </div >
     );
 
 };

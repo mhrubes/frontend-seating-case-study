@@ -1,12 +1,15 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button.tsx';
+import { useTranslation } from 'react-i18next';
 
 interface LoginProps extends React.HTMLAttributes<HTMLElement> {
   closeLoginModal: (isOpen: boolean) => void;
 }
 
 const Login = React.forwardRef<HTMLDivElement, LoginProps>((props, ref) => {
+  const { t } = useTranslation();
+
   const [selectOfType, setSelectOfType] = useState('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -68,7 +71,7 @@ const Login = React.forwardRef<HTMLDivElement, LoginProps>((props, ref) => {
             <div className="sm:flex sm:items-start">
               <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                 <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                  {selectOfType === "login" ? "Přihlašovací okno" : "Registrační okno"}
+                  {selectOfType === "login" ? t('formValues.loginModal.loginWindow') : t('formValues.registerModal.registerWindow')}
                 </h3>
               </div>
             </div>
@@ -81,20 +84,20 @@ const Login = React.forwardRef<HTMLDivElement, LoginProps>((props, ref) => {
                 <input
                   type="email"
                   className="bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
-                  placeholder="E-mail"
+                  placeholder={t('formValues.email')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
                 <input
                   type="password"
                   className="mt-2 bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
-                  placeholder="Heslo"
+                  placeholder={t('formValues.password')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 <p className='text-red-500 mt-2'>{loginError}</p>
                 <Button type="submit" variant="default" className='mt-2'>
-                  Přihlásit
+                  {t('login')}
                 </Button>
 
               </div>
@@ -108,14 +111,14 @@ const Login = React.forwardRef<HTMLDivElement, LoginProps>((props, ref) => {
                 <input
                   type="text"
                   className="bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
-                  placeholder="Jméno"
+                  placeholder={t('formValues.firstname')}
                   value={firstname}
                   onChange={(e) => setFirstname(e.target.value)}
                 />
                 <input
                   type="text"
                   className="mt-2 bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
-                  placeholder="Příjmení"
+                  placeholder={t('formValues.lastname')}
                   value={lastname}
                   onChange={(e) => setLastname(e.target.value)}
                 />
@@ -123,19 +126,19 @@ const Login = React.forwardRef<HTMLDivElement, LoginProps>((props, ref) => {
                 <input
                   type="email"
                   className="mt-2 bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
-                  placeholder="E-mail"
+                  placeholder={t('formValues.email')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
                 <input
                   type="password"
                   className="mt-2 bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
-                  placeholder="Heslo"
+                  placeholder={t('formValues.password')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 <Button type="submit" variant="default" className='mt-2'>
-                  Registrovat
+                  {t('register')}
                 </Button>
               </div>
             </form>
@@ -144,16 +147,16 @@ const Login = React.forwardRef<HTMLDivElement, LoginProps>((props, ref) => {
           <div className="bg-gray-50 pb-2 text-center">
             {selectOfType === "register" &&
               <Button onClick={() => setSelectOfType('login')} className='text-black' type="button" variant="outline">
-                Přihlásit se
+                {t('login')}
               </Button>
             }
             {selectOfType === "login" &&
               <Button onClick={() => setSelectOfType('register')} className='text-black' type="button" variant="outline">
-                Registrovat se
+                {t('register')}
               </Button>
             }
             <button onClick={handleCloseModal} type="button" className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
-              Zpět
+              {t('back')}
             </button>
           </div>
         </div>

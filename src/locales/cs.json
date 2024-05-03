@@ -1,3 +1,70 @@
 {
-    "hi": "Ahoj!"
+    "mainPage": {
+        "order": "Objednat nyní"
+    },
+    
+    "login": "Přihlásit se",
+    "register": "Registrovat se",
+    "logout": "Odhlásit se",
+    "back": "Zpět",
+    "loading": "Načítání",
+    "detail": "Detail",
+    "toCalendar": "Přidat do kalendáře",
+    
+    "totalOrder": {
+        "totalTicketsZero": "Zatím nemáte žádnou vstupenku",
+        "totalTicketsOne": "Celkově <strong>{{count}}</strong> vstupenka",
+        "totalTicketsFew": "Celkově <strong>{{count}}</strong> vstupenky",
+        "totalTicketsMany": "Celkově <strong>{{count}}</strong> vstupenek",
+        "price": "{{price}}",
+        "type": "{{type}}"
+    },
+
+    "formValues": {
+        "orderModal": {
+            "selectChoice": "Zvolte možnost pro pokračování",
+            "user": "Uživatel",
+            "host": "Host"
+        },
+        "loginModal": {
+            "loginWindow": "Přihlašovací formulář"
+        },
+        "registerModal": {
+            "registerWindow": "Registrační formulář"
+        },
+
+        "email": "E-mail",
+        "firstname": "Jméno",
+        "lastname": "Příjmení",
+        "password": "Heslo"
+    },
+
+    "orderDetail": {
+        "totalTickets": "Celkový počet vstupenek v košíku: <strong>{{total}}</strong>",
+        "totalPrice": "Celková cena: <strong>{{price}}</strong> {{type}}",
+
+        "orderHostHeadline": "Vyplňte objednávku",
+        "sendOrder": "Odeslat objednávku"
+    },
+
+    "seatPopover": {
+        "place": "Místo",
+        "row": "Řada",
+        "ticketType": "Typ tiketu",
+        "ticketPrice": "Cena tiketu",
+        "addToCart": "Přidat do košíku",
+        "removeFromCart": "Odebrat z košíku"
+    },
+
+    "eventDetail": {
+        "when": "Kdy",
+        "where": "Kde"
+    },
+
+    "customMessage": {
+        "orderSuccess": "Objednávka byla <strong>úspěšně</strong> vytvořena.",
+        "error400": "Nastala <strong>chyba</strong>. Zkontrolujte prosím vyplněná pole.",
+        "error500": "Musíte vyplnit <strong>všechna</strong> pole.",
+        "emptyCart": "Prozatím nemáte žádnou vstupenku."
+    }
 }

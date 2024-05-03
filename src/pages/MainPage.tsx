@@ -40,6 +40,11 @@ function MainPage() {
 	const [loginModalIsOpen, setLoginModalIsOpen] = useState(false);
 	const [orderModalIsOpen, setOrderModalIsOpen] = useState(false);
 
+	// Change language
+	const changeLanguage = (lng) => {
+		i18n.changeLanguage(lng);
+	};
+
 	useEffect(() => {
 		const handleResize = () => {
 			setWindowWidth(window.innerWidth);
@@ -151,15 +156,6 @@ function MainPage() {
 		}
 	}
 
-	// {updatedSeatsWithCartInfo && updatedSeatsWithCartInfo.map((row) => (
-	// 	row.seats.map((seat) => {
-	// 		console.log(row);
-
-	// 	  console.log(seat); // Vypsat sedadlo do konzole
-	// 	  return null; // Musíte vracet něco, pokud jste uvnitř map, ale chcete jen vypsat do konzole
-	// 	})
-	// ))}
-
 	return (
 		<div className="flex flex-col grow ">
 			{/* header (wrapper) */}
@@ -202,17 +198,39 @@ function MainPage() {
 										<DropdownMenuSeparator />
 										<DropdownMenuGroup>
 											<DropdownMenuItem>
+											<DropdownMenuItem>
+												{i18n.language === 'en' ? (
+													<Button className='ml-1 w-full' variant="secondary" onClick={() => changeLanguage('cz')}>
+														CZ
+													</Button>
+												) : (
+													<Button className='ml-1 w-full' variant="secondary" onClick={() => changeLanguage('en')}>
+														EN
+													</Button>
+												)}
+											</DropdownMenuItem>
 												<Button className='w-full' variant="outline" onClick={logout}>
-													Odhlásit
+													{t('logout')}
 												</Button>
 											</DropdownMenuItem>
 										</DropdownMenuGroup>
 									</DropdownMenuContent>
 								</DropdownMenu>
 							) : (
-								<Button variant="secondary" onClick={openLoginModal}>
-									Přihlásit / Registrovat se
-								</Button>
+								<React.Fragment>
+									<Button variant="secondary" onClick={openLoginModal}>
+										{t('login')} / {t('register')}
+									</Button>
+									{i18n.language === 'en' ? (
+										<Button className='ml-1' variant="secondary" onClick={() => changeLanguage('cz')}>
+											CZ
+										</Button>
+									) : (
+										<Button className='ml-1' variant="secondary" onClick={() => changeLanguage('en')}>
+											EN
+										</Button>
+									)}
+								</React.Fragment>
 							)
 						}
 					</div>
@@ -237,7 +255,7 @@ function MainPage() {
 
 						{updatedSeatsWithCartInfo ? (
 							<div className='text-black'>
-								{/* Div kontejner */}
+								{/* Div container */}
 								<div className='grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10'
 									style={{
 										gridTemplateColumns: 'repeat(auto-fill, minmax(40px, 1fr))',
@@ -265,7 +283,7 @@ function MainPage() {
 							</div>
 						) : (
 							// Loading before updatedSeatsWithCartInfo
-							<div>Načítání...</div>
+							<div>{t('loading')}...</div>
 						)}
 					</div>
 
@@ -281,18 +299,17 @@ function MainPage() {
 				<div className="max-w-screen-lg p-6 flex justify-between items-center gap-4 grow">
 					{/* total in cart state */}
 					<div className="flex flex-col">
-						<span className='text-black'>
-							Celkově za {cartItems.length} {cartItems.length === 0 ? "vstupenek"
-								: cartItems.length === 1 ? "vstupenku"
-									: cartItems.length >= 5 ? "vstupenek"
-										: "vstupenky"}
+						<span className='text-black' dangerouslySetInnerHTML={{
+							__html: t(`totalOrder.totalTickets${cartItems.length === 0 ? 'Zero' : cartItems.length === 1 ? 'One' : cartItems.length < 5 ? 'Few' : 'Many'}`,
+								{ count: cartItems.length })
+						}}>
 						</span>
-						<span className="text-2xl text-black font-semibold"> {totalPrice} {eventData?.currencyIso}</span>
+						<span className="text-2xl text-black font-semibold"> {t('totalOrder.price', { price: totalPrice })} {t('totalOrder.type', { type: eventData?.currencyIso })} </span>
 					</div>
 
 					{/* checkout button */}
 					<Button variant="default" onClick={openOrderModal}>
-						Objednat
+						{t('mainPage.order')}
 					</Button>
 
 					{orderModalIsOpen &&

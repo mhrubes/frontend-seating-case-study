@@ -3,8 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button.tsx';
+import { useTranslation } from 'react-i18next';
 
 const EventDetail: React.FC = (props) => {
+    const { t } = useTranslation();
+
     const [eventData, setEventData] = useState<any>(null);
 
     // get id from URL
@@ -43,17 +46,17 @@ const EventDetail: React.FC = (props) => {
                     <h1 className='text-2xl pt-5'><strong>{eventData?.namePub}</strong></h1>
                     <p className='pt-5 text-center'> {eventData?.description} </p>
 
-                    <h3 className='text-xl mt-10'><strong>Kdy?</strong></h3>
+                    <h3 className='text-xl mt-10'><strong>{t('eventDetail.when')}?</strong></h3>
                     <p className='text-xl mt-2'>{getDate(eventData?.dateFrom)} - {getDate(eventData?.dateTo)}</p>
 
-                    <h3 className='text-xl mt-10'><strong>Kde?</strong></h3>
+                    <h3 className='text-xl mt-10'><strong>{t('eventDetail.where')}?</strong></h3>
                     <p className='text-xl mt-2'>{eventData?.place}</p>
                 </div>
 
                 <div className='mb-10'>
                     <Link to='/'>
                         <Button className='w-40' variant="default">
-                            Zpět
+                        {t('back')}
                         </Button>
                     </Link>
                 </div>

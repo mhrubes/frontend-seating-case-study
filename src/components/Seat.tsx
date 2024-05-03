@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button.tsx';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.tsx';
 import { cn } from '@/lib/utils.ts';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface SeatProps extends React.HTMLAttributes<HTMLElement> {
 	data: {
@@ -28,6 +29,8 @@ interface SeatProps extends React.HTMLAttributes<HTMLElement> {
 
 
 export const Seat = React.forwardRef<HTMLDivElement, SeatProps>((props, ref) => {
+	const { t } = useTranslation();
+
 	const [isInCart, setIsInCart] = useState(props.data.isInCart);
 
 	let data = props;
@@ -64,20 +67,20 @@ export const Seat = React.forwardRef<HTMLDivElement, SeatProps>((props, ref) => 
 			</PopoverTrigger>
 			<PopoverContent>
 				<pre>
-					<p>Místo - {data?.data?.place}</p>
-					<p>Řada - {data?.row}</p>
-					<p>Typ tiketu - {data?.ticketTypes[0]?.id === data?.data?.ticketTypeId ? data?.ticketTypes[1]?.name : data?.ticketTypes[0]?.name}</p>
-					<p>Cena tiketu - {data?.ticketTypes[0]?.id === data?.data?.ticketTypeId ? data?.ticketTypes[1].price : data?.ticketTypes[0].price}</p>
+					<p>{t('seatPopover.place')} - {data?.data?.place}</p>
+					<p>{t('seatPopover.row')} - {data?.row}</p>
+					<p>{t('seatPopover.ticketType')} - {data?.ticketTypes[0]?.id === data?.data?.ticketTypeId ? data?.ticketTypes[1]?.name : data?.ticketTypes[0]?.name}</p>
+					<p>{t('seatPopover.ticketPrice')} - {data?.ticketTypes[0]?.id === data?.data?.ticketTypeId ? data?.ticketTypes[1].price : data?.ticketTypes[0].price}</p>
 				</pre>
 
 				<footer className="flex flex-col">{
 					isInCart ? (
 						<Button variant="destructive" size="sm" onClick={handleRemoveFromCart}>
-							Remove from cart
+							{t('seatPopover.removeFromCart')}
 						</Button>
 					) : (
 						<Button variant="default" size="sm" onClick={() => addToCart(props.data)}>
-							Add to cart
+							{t('seatPopover.addToCart')}
 						</Button>
 					)
 				}</footer>

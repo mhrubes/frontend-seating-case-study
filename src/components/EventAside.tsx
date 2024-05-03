@@ -25,7 +25,7 @@ export const EventAside = React.forwardRef<HTMLDivElement, EventAsideProps>((pro
             </Link>
             {/* add to calendar button */}
             <Button variant="secondary" disabled>
-                Add to calendar
+                Přidat do kalendáře
             </Button>
         </aside>
     );

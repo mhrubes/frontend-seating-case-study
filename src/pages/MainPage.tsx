@@ -203,7 +203,7 @@ function MainPage() {
 										<DropdownMenuGroup>
 											<DropdownMenuItem>
 												<Button className='w-full' variant="outline" onClick={logout}>
-													Logout
+													Odhlásit
 												</Button>
 											</DropdownMenuItem>
 										</DropdownMenuGroup>
@@ -211,7 +211,7 @@ function MainPage() {
 								</DropdownMenu>
 							) : (
 								<Button variant="secondary" onClick={openLoginModal}>
-									Login or register
+									Přihlásit / Registrovat se
 								</Button>
 							)
 						}
@@ -265,7 +265,7 @@ function MainPage() {
 							</div>
 						) : (
 							// Loading before updatedSeatsWithCartInfo
-							<div>Loading...</div>
+							<div>Načítání...</div>
 						)}
 					</div>
 
@@ -292,7 +292,7 @@ function MainPage() {
 
 					{/* checkout button */}
 					<Button variant="default" onClick={openOrderModal}>
-						Checkout now
+						Objednat
 					</Button>
 
 					{orderModalIsOpen &&

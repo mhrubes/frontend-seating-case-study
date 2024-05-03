@@ -108,14 +108,14 @@ const Login = React.forwardRef<HTMLDivElement, LoginProps>((props, ref) => {
                 <input
                   type="text"
                   className="bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
-                  placeholder="Firstname"
+                  placeholder="Jméno"
                   value={firstname}
                   onChange={(e) => setFirstname(e.target.value)}
                 />
                 <input
                   type="text"
                   className="mt-2 bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
-                  placeholder="Lastname"
+                  placeholder="Příjmení"
                   value={lastname}
                   onChange={(e) => setLastname(e.target.value)}
                 />

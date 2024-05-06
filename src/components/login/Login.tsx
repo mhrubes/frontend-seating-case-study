@@ -2,7 +2,6 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button.tsx';
 import { useTranslation } from 'react-i18next';
-
 import { useUser } from '../../context/UserContext';
 
 interface LoginProps extends React.HTMLAttributes<HTMLElement> {
@@ -48,15 +47,20 @@ const Login = React.forwardRef<HTMLDivElement, LoginProps>((props, ref) => {
 
     // If selected Register
     if (selectOfType === 'register') {
-      let data = {
-        email: email,
-        password: password,
-        firstname: firstname,
-        lastname: lastname
-      };
+      if (email !== '' || email.length !== 0 || email.includes('@')) {
+        let data = {
+          email: email,
+          password: password,
+          firstname: firstname,
+          lastname: lastname
+        };
 
-      props.userRegister(data);
-      handleCloseModal();
+        props.userRegister(data);
+        handleCloseModal();
+      }
+      else {
+        setLoginError(100);
+      }
     }
   };
 
@@ -98,11 +102,13 @@ const Login = React.forwardRef<HTMLDivElement, LoginProps>((props, ref) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                <p className='text-red-500 mt-2'>{loginError === 401 && t('customMessage.error401')}</p>
+                {loginError === 401 &&
+                  <p className='text-red-500 mt-2'>{t('customMessage.error401')}</p>
+                }
+                {/* Login Button */}
                 <Button type="submit" variant="default" className='mt-2'>
                   {t('login')}
                 </Button>
-
               </div>
             </form>
           }
@@ -125,11 +131,10 @@ const Login = React.forwardRef<HTMLDivElement, LoginProps>((props, ref) => {
                   value={lastname}
                   onChange={(e) => setLastname(e.target.value)}
                 />
-
                 <input
                   type="email"
                   className="mt-2 bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
-                  placeholder={t('formValues.email')}
+                  placeholder={`${t('formValues.email')} *`}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -140,6 +145,10 @@ const Login = React.forwardRef<HTMLDivElement, LoginProps>((props, ref) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
+                {loginError === 100 &&
+                  <p className='text-red-500 mt-2'
+                    dangerouslySetInnerHTML={{ __html: t('customMessage.error100') }}></p>}
+                {/* Register Button */}
                 <Button type="submit" variant="default" className='mt-2'>
                   {t('register')}
                 </Button>
@@ -154,19 +163,16 @@ const Login = React.forwardRef<HTMLDivElement, LoginProps>((props, ref) => {
                 {t('login')}
               </Button>
             }
-            {/* Login button */}
             {/* Register button */}
             {selectOfType === "login" &&
               <Button onClick={() => setSelectOfType('register')} className='text-black' type="button" variant="outline">
                 {t('register')}
               </Button>
             }
-            {/* Register button */}
             {/* Back button */}
             <button onClick={handleCloseModal} type="button" className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
               {t('back')}
             </button>
-            {/* Back button */}
           </div>
         </div>
       </div>

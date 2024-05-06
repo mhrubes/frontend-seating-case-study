@@ -63,6 +63,7 @@
 
     "customMessage": {
         "orderSuccess": "Objednávka byla <strong>úspěšně</strong> vytvořena.",
+        "error100": "Zkontrolujte pole označená <strong>*</strong>.",
         "error400": "Nastala <strong>chyba</strong>. Zkontrolujte prosím vyplněná pole.",
         "error401": "Neplatné přihlašovací údaje.",
         "error500": "Musíte vyplnit <strong>všechna</strong> pole.",

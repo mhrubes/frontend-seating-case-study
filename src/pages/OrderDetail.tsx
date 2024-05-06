@@ -33,6 +33,11 @@ const OrderDetail: React.FC = (props) => {
             return total + currentItem.price;
         }, 0);
 
+        if (cartItems.length === 0) {
+            setOrderCompleted(false);
+            setOrderProccessAnswer();
+        }
+
         setTotalPrice(newTotalPrice);
     }, [cartItems, seatTicketPrice]);
 
@@ -227,17 +232,17 @@ const OrderDetail: React.FC = (props) => {
 
                     {/* Error Messages */}
                     {orderCompleted && orderProccessAnswer === 200 &&
-                        <div>
+                        <div className='m-1'>
                             <p className='text-green-600' dangerouslySetInnerHTML={{ __html: t('customMessage.orderSuccess') }} />
                         </div>
                     }
                     {orderProccessAnswer === 400 &&
-                        <div>
+                        <div className='m-1'>
                             <p className='text-red-400' dangerouslySetInnerHTML={{ __html: t('customMessage.error400') }} />
                         </div>
                     }
                     {orderProccessAnswer === 500 &&
-                        <div>
+                        <div className='m-1'>
                             <p className='text-red-400' dangerouslySetInnerHTML={{ __html: t('customMessage.error500') }} />
                         </div>
                     }

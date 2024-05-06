@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button.tsx';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.tsx';
 import { cn } from '@/lib/utils.ts';
 import { useTranslation } from 'react-i18next';
-
 import { useUser } from '../context/UserContext';
 import { useEvent } from '../context/EventContext';
 import { useCart } from '../context/CartContext';
@@ -17,12 +16,18 @@ const OrderDetail: React.FC = (props) => {
     const { cartItems, addToCart, removeFromCart } = useCart();
     const { eventData } = useEvent();
     const { seatTicketPrice } = useEvent();
-    const { email, firstname, lastname, isHost, isLoggedIn, setEmail, setFirstname, setLastname, setIsHost } = useUser();
+    const { email, firstname, lastname, isHost, isLoggedIn, setIsHost } = useUser();
 
     const [totalPrice, setTotalPrice] = useState<any[]>(0);
     const [orderProccessAnswer, setOrderProccessAnswer] = useState();
     const [orderCompleted, setOrderCompleted] = useState(false);
 
+    const [userEmail, setEmail] = useState(email);
+    const [userFirstname, setFirstname] = useState(firstname);
+    const [userLastname, setLastname] = useState(lastname);
+
+
+    // Total Price of Tickets in Cart
     useEffect(() => {
         const newTotalPrice = cartItems.reduce((total, currentItem) => {
             return total + currentItem.price;
@@ -31,6 +36,7 @@ const OrderDetail: React.FC = (props) => {
         setTotalPrice(newTotalPrice);
     }, [cartItems, seatTicketPrice]);
 
+    // Remove from Cart
     const handleRemoveFromCart = (data: any) => {
         removeFromCart(data?.seatId)
     };
@@ -52,15 +58,16 @@ const OrderDetail: React.FC = (props) => {
         return acc;
     }, {});
 
+    // Order
     const handleCreateOrder = () => {
         let data = {};
         let user;
         let tickets = [];
 
         if (isHost) {
-            if ((email !== '' && email.includes('@')) && firstname !== '' && lastname !== '' && cartItems.length !== 0) {
+            if (((userEmail !== '' && userEmail.includes('@')) && userFirstname !== '' && userLastname !== '') && cartItems.length !== 0) {
                 try {
-                    user = { email: email, firstName: firstname, lastName: lastname };
+                    user = { email: userEmail, firstName: userFirstname, lastName: userLastname };
 
                     data.user = user;
                     data.eventId = eventData.eventId;
@@ -92,30 +99,34 @@ const OrderDetail: React.FC = (props) => {
         }
 
         if (isLoggedIn) {
-            try {
-                user = { email: email, firstName: firstname, lastName: lastname };
+            if (((userEmail !== '' && userEmail.includes('@')) || userFirstname !== '' || userLastname !== '') && cartItems.length !== 0) {
+                try {
+                    user = { email: userEmail, firstName: userFirstname, lastName: userLastname };
 
-                data.user = user;
-                data.eventId = eventData.eventId;
+                    data.user = user;
+                    data.eventId = eventData.eventId;
 
-                cartItems.forEach((item) => {
-                    tickets.push({ ticketTypeId: item.ticketTypeId, seatId: item.seatId })
-                });
-
-                data.tickets = tickets;
-
-                axios.post('https://nfctron-frontend-seating-case-study-2024.vercel.app/order', data)
-                    .then(response => {
-                        if (response?.status === 200) {
-                            setOrderProccessAnswer(response?.status);
-                            setOrderCompleted(true);
-                        }
-                    })
-                    .catch(error => {
-                        setOrderProccessAnswer(error?.response?.status)
-                        return error;
+                    cartItems.forEach((item) => {
+                        tickets.push({ ticketTypeId: item.ticketTypeId, seatId: item.seatId })
                     });
-            } catch (error) {
+
+                    data.tickets = tickets;
+
+                    axios.post('https://nfctron-frontend-seating-case-study-2024.vercel.app/order', data)
+                        .then(response => {
+                            if (response?.status === 200) {
+                                setOrderProccessAnswer(response?.status);
+                                setOrderCompleted(true);
+                            }
+                        })
+                        .catch(error => {
+                            setOrderProccessAnswer(error?.response?.status)
+                            return error;
+                        });
+                } catch (error) {
+                    setOrderProccessAnswer(500);
+                }
+            } else {
                 setOrderProccessAnswer(500);
             }
         }
@@ -133,6 +144,7 @@ const OrderDetail: React.FC = (props) => {
                         gridTemplateColumns: 'repeat(auto-fill, minmax(40px, 1fr))',
                         gridAutoRows: '40px'
                     }}>
+                        {/* Mapping cartItems */}
                         {cartItems.map((seat, index) => (
                             <Popover key={index}>
                                 <PopoverTrigger>
@@ -160,6 +172,7 @@ const OrderDetail: React.FC = (props) => {
                         ))}
                     </div>
 
+                    {/* Total Price and Count of Tickets in Cart */}
                     {cartItems.length !== 0 &&
                         <div className='mt-8 text-xl'>
                             <p dangerouslySetInnerHTML={{ __html: t('orderDetail.totalTickets', { total: cartItems.length }) }}></p>
@@ -169,36 +182,38 @@ const OrderDetail: React.FC = (props) => {
 
                     <hr className='mt-10' />
 
+                    {/* Send Order */}
                     {isLoggedIn && !isHost && !orderCompleted && cartItems.length !== 0 &&
                         <Button onClick={handleCreateOrder} variant="default" className='mt-2'>
-                            Odeslat objednávku
+                            {t('orderDetail.sendOrder')}
                         </Button>
                     }
 
+                    {/* Host Section */}
                     {isHost && !orderCompleted && cartItems.length !== 0 && (
                         <div className='w-full text-center mt-10'>
                             <h3>{t('orderDetail.orderHostHeadline')}</h3>
                             <form>
                                 <div className="bg-gray-50 px-4 py-3 text-center">
                                     <input
-                                        type="email"
+                                        type="userEmail"
                                         className="bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
                                         placeholder={`${t('formValues.email')} *`}
-                                        value={email}
+                                        value={userEmail}
                                         onChange={(e) => setEmail(e.target.value)}
                                     />
                                     <input
                                         type="text"
                                         className="mt-2 bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
                                         placeholder={`${t('formValues.firstname')} *`}
-                                        value={firstname}
+                                        value={userFirstname}
                                         onChange={(e) => setFirstname(e.target.value)}
                                     />
                                     <input
                                         type="text"
                                         className="mt-2 bg-white text-black border border-gray-300 rounded-md w-full py-2 px-3 focus:outline-none focus:border-blue-500"
                                         placeholder={`${t('formValues.lastname')} *`}
-                                        value={lastname}
+                                        value={userLastname}
                                         onChange={(e) => setLastname(e.target.value)}
                                     />
                                     <p className='text-red-500 mt-2'></p>
@@ -210,6 +225,7 @@ const OrderDetail: React.FC = (props) => {
                         </div>
                     )}
 
+                    {/* Error Messages */}
                     {orderCompleted && orderProccessAnswer === 200 &&
                         <div>
                             <p className='text-green-600' dangerouslySetInnerHTML={{ __html: t('customMessage.orderSuccess') }} />
@@ -225,7 +241,6 @@ const OrderDetail: React.FC = (props) => {
                             <p className='text-red-400' dangerouslySetInnerHTML={{ __html: t('customMessage.error500') }} />
                         </div>
                     }
-
                     {cartItems.length === 0 &&
                         <p className='mt-5 text-lg'>
                             {t('customMessage.emptyCart')}
@@ -234,6 +249,7 @@ const OrderDetail: React.FC = (props) => {
 
                 </div>
 
+                {/* Back Button */}
                 <div className='mb-10'>
                     <Link to='/'>
                         <Button className='w-40' variant="default" onClick={() => setIsHost(false)}>
@@ -244,7 +260,6 @@ const OrderDetail: React.FC = (props) => {
             </div>
         </div >
     );
-
 };
 
 export default OrderDetail;

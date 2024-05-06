@@ -33,7 +33,9 @@ export const EventProvider = ({ children }) => {
 	}, []);
 
 	return (
-		<EventContext.Provider value={{ eventData, seatData, seatTicketPrice }}>
+		<EventContext.Provider value={{
+			eventData, seatData, seatTicketPrice
+		}}>
 			{children}
 		</EventContext.Provider>
 	);

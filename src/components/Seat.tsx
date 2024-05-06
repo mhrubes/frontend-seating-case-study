@@ -39,7 +39,6 @@ export const Seat = React.forwardRef<HTMLDivElement, SeatProps>((props, ref) => 
 		setIsInCart(props.data.isInCart);
 	}, [props.data.isInCart]);
 
-
 	const addToCart = (item: any) => {
 		let price = data?.ticketTypes[0].id === item?.ticketTypeId ? data?.ticketTypes[1].price : data?.ticketTypes[0].price;
 		let row = data?.row;

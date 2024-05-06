@@ -64,6 +64,7 @@
     "customMessage": {
         "orderSuccess": "The order has been <strong>successfully</strong> created.",
         "error400": "An <strong>error</strong> has occurred. Please check the completed fields.",
+        "error401": "Invalid credentials.",
         "error500": "You must fill in <strong>all</strong> fields.",
         "emptyCart": "You don't have any tickets yet."
     }

@@ -1,8 +1,10 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+// import Pages
 import MainPage from "./pages/MainPage";
 import EventDetail from "./pages/EventDetail";
 import OrderDetail from "./pages/OrderDetail";
+// import Contexts
 import { CartProvider } from "./context/CartContext";
 import { UserProvider } from "./context/UserContext";
 import { EventProvider } from "./context/EventContext";

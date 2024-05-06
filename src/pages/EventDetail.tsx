@@ -10,11 +10,12 @@ const EventDetail: React.FC = (props) => {
 
     const [eventData, setEventData] = useState<any>(null);
 
-    // get id from URL
+    // get id from URL - Only Prepared
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const id = searchParams.get('id');
 
+    // API get Event - Useful add API for event?id=...
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -42,21 +43,25 @@ const EventDetail: React.FC = (props) => {
         <div className='bg-white text-center h-full text-black'>
             <div className='flex flex-col min-h-screen justify-between container'>
                 <div className='mt-8'>
+                    {/* Event Image */}
                     <img className='h-10 mx-auto rounded-lg' style={{ height: "200px" }} src={eventData?.headerImageUrl} alt="Header" />
+                    {/* Event Name */}
                     <h1 className='text-2xl pt-5'><strong>{eventData?.namePub}</strong></h1>
+                    {/* Event Description */}
                     <p className='pt-5 text-center'> {eventData?.description} </p>
-
+                    {/* Event Date */}
                     <h3 className='text-xl mt-10'><strong>{t('eventDetail.when')}?</strong></h3>
                     <p className='text-xl mt-2'>{getDate(eventData?.dateFrom)} - {getDate(eventData?.dateTo)}</p>
-
+                    {/* Event Place */}
                     <h3 className='text-xl mt-10'><strong>{t('eventDetail.where')}?</strong></h3>
                     <p className='text-xl mt-2'>{eventData?.place}</p>
                 </div>
 
+                {/* Back Button */}
                 <div className='mb-10'>
                     <Link to='/'>
                         <Button className='w-40' variant="default">
-                        {t('back')}
+                            {t('back')}
                         </Button>
                     </Link>
                 </div>

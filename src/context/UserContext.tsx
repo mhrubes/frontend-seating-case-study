@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext } from 'react';
+import axios from 'axios';
 
 const UserContext = createContext();
 
@@ -14,12 +15,26 @@ export const UserProvider = ({ children }) => {
 	const [lastname, setLastname] = useState('');
 
 	// Login User
-	const userLogin = (item: any) => {
-		setEmail(item?.user?.email);
-		setFirstname(item?.user?.firstName);
-		setLastname(item?.user?.lastName);
+	const userLogin = async (item: any) => {
+		let data = {}
 
-		setIsLogedIn(true);
+		await axios.post('https://nfctron-frontend-seating-case-study-2024.vercel.app/login', item)
+			.then(response => {
+				if (response?.status === 200) {
+					setEmail(response?.data?.user?.email);
+					setFirstname(response?.data?.user?.firstName);
+					setLastname(response?.data?.user?.lastName);
+
+					setIsLogedIn(true);
+
+					data.error = response?.status;
+				}
+			})
+			.catch(error => {
+				data.error = error.response?.status;
+			});
+
+		return data;
 	};
 
 	// Register User
@@ -41,7 +56,10 @@ export const UserProvider = ({ children }) => {
 	}
 
 	return (
-		<UserContext.Provider value={{ isLoggedIn, isHost, email, password, firstname, lastname, setIsHost, userLogin, userRegister, userLogout, setEmail, setFirstname, setLastname }}>
+		<UserContext.Provider value={{
+			isLoggedIn, isHost, email, password, firstname, lastname,
+			setIsHost, userLogin, userRegister, userLogout, setEmail, setFirstname, setLastname
+		}}>
 			{children}
 		</UserContext.Provider>
 	);

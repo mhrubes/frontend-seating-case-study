@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button.tsx';
 import { useTranslation } from 'react-i18next';
 
+import { useUser } from '../../context/UserContext';
+
 interface LoginProps extends React.HTMLAttributes<HTMLElement> {
   closeLoginModal: (isOpen: boolean) => void;
 }
@@ -16,7 +18,9 @@ const Login = React.forwardRef<HTMLDivElement, LoginProps>((props, ref) => {
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
 
-  const [loginError, setLoginError] = useState('');
+  const [loginError, setLoginError] = useState();
+
+  const { userLogin } = useUser();
 
   const handleCloseModal = () => {
     props.closeLoginModal(false);
@@ -25,25 +29,24 @@ const Login = React.forwardRef<HTMLDivElement, LoginProps>((props, ref) => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // If selected Login
     if (selectOfType === 'login') {
       let data = {
         email: email,
         password: password
       };
 
-      axios.post('https://nfctron-frontend-seating-case-study-2024.vercel.app/login', data)
-        .then(response => {
-          if (response?.status === 200) {
-            props.userLogin(response?.data)
-            handleCloseModal();
-          }
-        })
-        .catch(error => {
-          setLoginError(error.response?.data?.message)
-          return error;
-        });
+      let log = await userLogin(data);
+
+      if (log.error === 200) {
+        handleCloseModal();
+      }
+      else {
+        setLoginError(log.error);
+      }
     }
 
+    // If selected Register
     if (selectOfType === 'register') {
       let data = {
         email: email,
@@ -95,7 +98,7 @@ const Login = React.forwardRef<HTMLDivElement, LoginProps>((props, ref) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                <p className='text-red-500 mt-2'>{loginError}</p>
+                <p className='text-red-500 mt-2'>{loginError === 401 && t('customMessage.error401')}</p>
                 <Button type="submit" variant="default" className='mt-2'>
                   {t('login')}
                 </Button>
@@ -145,19 +148,25 @@ const Login = React.forwardRef<HTMLDivElement, LoginProps>((props, ref) => {
           }
 
           <div className="bg-gray-50 pb-2 text-center">
+            {/* Login button */}
             {selectOfType === "register" &&
               <Button onClick={() => setSelectOfType('login')} className='text-black' type="button" variant="outline">
                 {t('login')}
               </Button>
             }
+            {/* Login button */}
+            {/* Register button */}
             {selectOfType === "login" &&
               <Button onClick={() => setSelectOfType('register')} className='text-black' type="button" variant="outline">
                 {t('register')}
               </Button>
             }
+            {/* Register button */}
+            {/* Back button */}
             <button onClick={handleCloseModal} type="button" className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
               {t('back')}
             </button>
+            {/* Back button */}
           </div>
         </div>
       </div>

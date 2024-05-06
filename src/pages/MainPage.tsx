@@ -14,13 +14,10 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu.tsx';
-// import '../App.css';
-
+import Login from '@/components/login/Login';
 import { Seat } from '@/components/Seat.tsx';
 import { OrderModal } from '@/components/cart/OrderModal';
 import { EventAside } from '@/components/EventAside';
-import Login from '@/components/login/Login';
-
 import { useUser } from '../context/UserContext';
 import { useEvent } from '../context/EventContext';
 import { useCart } from '../context/CartContext';
@@ -45,6 +42,7 @@ function MainPage() {
 		i18n.changeLanguage(lng);
 	};
 
+	// Check the Window Width Size
 	useEffect(() => {
 		const handleResize = () => {
 			setWindowWidth(window.innerWidth);
@@ -57,6 +55,7 @@ function MainPage() {
 		};
 	}, []);
 
+	// Update Total Price in Cart
 	useEffect(() => {
 		const newTotalPrice = cartItems.reduce((total, currentItem) => {
 			return total + currentItem.price;
@@ -65,6 +64,7 @@ function MainPage() {
 		setTotalPrice(newTotalPrice);
 	}, [cartItems, seatTicketPrice]);
 
+	// Update cartItems
 	useEffect(() => {
 		// Create new Array of Objects compared with cartItems
 		const updatedSeats = seatData?.seatRows.map(row => {
@@ -103,14 +103,8 @@ function MainPage() {
 
 		removeFromCart(item.data.seatId);
 	};
-	// Cart Section
 
 	// User Section
-	// Login User
-	const handleUserLogin = (item: any) => {
-		userLogin(item);
-	};
-
 	// Register User
 	const handleUserRegister = (item: any) => {
 		userRegister(item);
@@ -120,8 +114,8 @@ function MainPage() {
 	const logout = () => {
 		userLogout()
 	}
-	// User Section
 
+	// Helper function for Modals
 	const openLoginModal = () => {
 		setLoginModalIsOpen(true);
 	};
@@ -185,7 +179,6 @@ function MainPage() {
 													<AvatarImage src={`https://source.boringavatars.com/marble/120/<user-email>?colors=25106C,7F46DB`} />
 													<AvatarFallback>CN</AvatarFallback>
 												</Avatar>
-
 												<div className="flex flex-col text-left">
 													<span className="text-sm font-medium text-black"> {firstname} </span>
 													<span className="text-xs text-zinc-500"> {email} </span>
@@ -197,18 +190,19 @@ function MainPage() {
 										<DropdownMenuLabel> {firstname} {lastname} </DropdownMenuLabel>
 										<DropdownMenuSeparator />
 										<DropdownMenuGroup>
+											{/* Change language - Logout buttons */}
 											<DropdownMenuItem>
-											<DropdownMenuItem>
-												{i18n.language === 'en' ? (
-													<Button className='ml-1 w-full' variant="secondary" onClick={() => changeLanguage('cz')}>
-														CZ
-													</Button>
-												) : (
-													<Button className='ml-1 w-full' variant="secondary" onClick={() => changeLanguage('en')}>
-														EN
-													</Button>
-												)}
-											</DropdownMenuItem>
+												<DropdownMenuItem>
+													{i18n.language === 'en' ? (
+														<Button className='ml-1 w-full' variant="secondary" onClick={() => changeLanguage('cz')}>
+															CZ
+														</Button>
+													) : (
+														<Button className='ml-1 w-full' variant="secondary" onClick={() => changeLanguage('en')}>
+															EN
+														</Button>
+													)}
+												</DropdownMenuItem>
 												<Button className='w-full' variant="outline" onClick={logout}>
 													{t('logout')}
 												</Button>
@@ -218,6 +212,7 @@ function MainPage() {
 								</DropdownMenu>
 							) : (
 								<React.Fragment>
+									{/* Login / Register - change Language buttons */}
 									<Button variant="secondary" onClick={openLoginModal}>
 										{t('login')} / {t('register')}
 									</Button>
@@ -231,8 +226,7 @@ function MainPage() {
 										</Button>
 									)}
 								</React.Fragment>
-							)
-						}
+							)}
 					</div>
 				</div>
 			</nav>
@@ -242,17 +236,14 @@ function MainPage() {
 				{/* inner content */}
 				<div className="max-w-screen-lg m-auto p-4 flex flex-col lg:flex-row gap-3">
 					{/* seating card */}
-
 					<div className="bg-white rounded-md grow shadow-sm lg:w-1/2">
-
+						{/* If window width is less than 1024 */}
 						{windowWidth < 1024 && (
 							<div>
 								<EventAside data={eventData} />
 								<br />
 							</div>
-						)
-						}
-
+						)}
 						{updatedSeatsWithCartInfo ? (
 							<div className='text-black'>
 								{/* Div container */}
@@ -282,11 +273,12 @@ function MainPage() {
 								</div>
 							</div>
 						) : (
-							// Loading before updatedSeatsWithCartInfo
+							// Loading before updatedSeatsWithCartInfo is loaded
 							<div>{t('loading')}...</div>
 						)}
 					</div>
 
+					{/* If window width is more or same as 1024 */}
 					{windowWidth >= 1024 &&
 						<EventAside data={eventData} />
 					}
@@ -306,18 +298,19 @@ function MainPage() {
 						</span>
 						<span className="text-2xl text-black font-semibold"> {t('totalOrder.price', { price: totalPrice })} {t('totalOrder.type', { type: eventData?.currencyIso })} </span>
 					</div>
-
-					{/* checkout button */}
+					{/* Checkout Button */}
 					<Button variant="default" onClick={openOrderModal}>
 						{t('mainPage.order')}
 					</Button>
 
+					{/* Order Modal */}
 					{orderModalIsOpen &&
 						<OrderModal closeOrderModal={closeOrderModal} />
 					}
 
+					{/* Login Modal */}
 					{loginModalIsOpen &&
-						<Login closeLoginModal={closeLoginModal} userLogin={handleUserLogin} userRegister={handleUserRegister} />
+						<Login closeLoginModal={closeLoginModal} userRegister={handleUserRegister} />
 					}
 
 				</div>
